@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 验证码工具类
  * @decription 提供验证码生成功能
- * @author 张永凤
+ * @author 张永葑
  * @date 2015/7/30
  * @version 1.0.0
  */

@@ -8,6 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webframe.common.Pager;
 import org.webframe.tools.collects.BeansUtil;
 
+/**
+ * 全局service，包含所有基本操作，请在spring配置文件中加入该类
+ * @author Administrator
+ *
+ */
 @Service
 @Transactional
 @SuppressWarnings("unchecked")
@@ -79,7 +84,7 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> findAll(Class<T> cla) {
-		return (List<T>) globalDao.findList("from " + cla.getSimpleName(),new Object[]{});
+		return (List<T>) globalDao.findList("from " + cla.getSimpleName(), new Object[]{});
 	}
 	
 	/**

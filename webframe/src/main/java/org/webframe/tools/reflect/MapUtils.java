@@ -1,5 +1,6 @@
 package org.webframe.tools.reflect;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
@@ -8,13 +9,12 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.ConvertUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.webframe.dao.Mapping.DateTimeConverter;
 import org.webframe.tools.collects.BeansUtil;
+import org.webframe.tools.reflect.formater.DateTimeConverter;
 
 /**
- * Map工具类
- * 
- * @author 张永风
+ * Map工具类（目前没有使用）
+ * @author 张永葑
  * 
  */
 public class MapUtils extends org.apache.commons.collections.MapUtils {
@@ -91,7 +91,7 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 	 * @throws NoSuchMethodException
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> Map<String, String> toMap(T object) {
+	public static <T> Map<String, Serializable> toMap(T object) {
 		try {
 			return getBeanUtilsBean().describe(object);
 		} catch (IllegalAccessException e) {
@@ -114,11 +114,11 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
 	 */
-	public static <T> List<Map<String, String>> toMapList(List<T> list){
-		List<Map<String, String>> retList = BeansUtil.newArrayList();
+	public static <T> List<Map<String, Serializable>> toMapList(List<T> list){
+		List<Map<String, Serializable>> retList = BeansUtil.newArrayList();
 		if (list != null && !list.isEmpty()) {
 			for (Object object : list) {
-				Map<String, String> map = toMap(object);
+				Map<String, Serializable> map = toMap(object);
 				retList.add(map);
 			}
 		}

@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * 分页对象(兼容easyui)
- * @author 张永凤
+ * @author 张永葑
  * @param <T>
  */
 public class Pager<T> {
@@ -15,7 +15,7 @@ public class Pager<T> {
 	
 	private long pageCount; //总页数
 	
-	private int size = 10; // 每页条数
+	private int size; // 每页条数
 	
 	private List<T> rows; // 分页数据
 	

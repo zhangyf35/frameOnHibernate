@@ -5,12 +5,17 @@ import java.lang.reflect.Field;
 
 import javax.persistence.Id;
 
+/**
+ * 对象合并
+ * @author 张永葑
+ *
+ */
 public class MergeObject {
 
 	/**
-	 * 将第二个参数对象的属性值合并到第一个上, 两个对象必须为同一类型
-	 * @param obj1
-	 * @param obj2
+	 * 将current对象的属性值合并到target, 两个对象必须为同一类型
+	 * @param target 基础对象
+	 * @param current 数据对象
 	 */
 	public static void merge(Object target, Object current) {
 		try {
@@ -32,7 +37,7 @@ public class MergeObject {
 	}
 	
 	/**
-	 * 取出对象的id
+	 * 取出对象的id值
 	 * @param current
 	 * @return
 	 */

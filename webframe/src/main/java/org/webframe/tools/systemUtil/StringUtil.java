@@ -1,15 +1,63 @@
 package org.webframe.tools.systemUtil;
 
+import java.util.UUID;
+
 /**
- * 命名字段驼峰,下划线转换
- * @author 张永风
+ * 字符串处理
+ * @author 张永葑
  *
  */
 public class StringUtil {
-
-	public static void main(String[] args) {
-		System.out.println(toCamel("ccc2_dddddd_aa"));
+	
+	/**
+	 * 得到UUID
+	 * @return
+	 */
+	public static String randomUUID() {
+		return UUID.randomUUID().toString().trim().replaceAll("-", "");
 	}
+	
+	/**
+	 * 得到指定位数的字符串位数length必须<=128
+	 * @param length
+	 * @return
+	 */
+	public static String randomString(int length) {
+		String string = "";
+		if(length <= 32) {
+			string = randomUUID();
+		} else if(length <= 64) {
+			string = randomUUID()+randomUUID();
+		} else if(length <= 128) {
+			string = randomUUID()+randomUUID()+randomUUID()+randomUUID();
+		}
+		return string.substring(string.length()-length);
+	}
+	
+	/**
+	 * 得到容易记住的数字
+	 * @param numCount
+	 * @return String
+	 */
+	public static String getEasyNumber(int numCount){
+		StringBuffer buf = new StringBuffer();
+		int preCount = -1;
+		int preNum = -1;
+		while (true) {
+			int count = (int) (Math.random() * 3+1);
+			int num = (int) (Math.random() * 10);
+			if(num == preNum || count == preCount) { continue; }
+			preNum = num;
+			preCount = count;
+			for (int i = 0; i < count; i++) {
+				buf.append(num);
+			}
+			if (buf.length() >= numCount) {
+				return buf.toString().substring(0, numCount);
+			}
+		}
+	}
+	
 	/**
 	 * 将命名转换成大写字母下划线命名
 	 * @param column
@@ -27,7 +75,6 @@ public class StringUtil {
 	public static String toLowerUnderline(String column) {
 		return toUnderLine(column).toLowerCase(); 
 	}
-	
 	
 	/**
 	 * 将命名转换成驼峰命名
@@ -55,7 +102,6 @@ public class StringUtil {
 			return result.toString();
 		}
 	}
-	
 	
 	/**
 	 * 将首字母变成大写

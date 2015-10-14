@@ -15,7 +15,7 @@ import org.webframe.tools.reflect.MergeObject;
 
 /**
  * 通用的操作类 dao
- * @author 张永峰
+ * @author 张永葑
  * 
  */
 @SuppressWarnings("unchecked")

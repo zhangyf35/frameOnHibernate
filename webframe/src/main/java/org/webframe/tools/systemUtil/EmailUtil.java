@@ -13,10 +13,7 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * 邮件工具类
- * @decription 提供邮件发送相关的方法
- * @author 张永凤
- * @date 2015/9/6
- * @version 1.0.0
+ * @author 张永葑
  */
 public class EmailUtil {
 	
@@ -56,18 +53,4 @@ public class EmailUtil {
 			e.printStackTrace();
 		}
 	}
-	
-	/**
-	 * 发送邮件
-	 * 此重载是默认qq邮箱，默认发送账户是857645778@qq.com
-	 * 默认收件账户是zebe@vip.qq.com
-	 * @param subject 邮件主题
-	 * @param content 邮件内容
-	 */
-	@SuppressWarnings("static-access")
-	public static void sendEmailMessage(String subject, String content){
-		new EmailUtil().sendEmailMessage(EmailUtil.QQ_EMAIL, "857645778@qq.com", 
-				"sj1314520.cs56", "zebe@vip.qq.com", subject, content);
-	}
-	
 }

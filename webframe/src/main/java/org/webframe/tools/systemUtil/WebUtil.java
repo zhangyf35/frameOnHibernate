@@ -24,8 +24,6 @@ import org.apache.http.util.EntityUtils;
  * WEB工具类
  * @description 提供WEB请求的常用方法
  * @author 张永凤
- * @date 2015/8/24
- * @version 1.0.0
  */
 @SuppressWarnings("deprecation")
 public class WebUtil {

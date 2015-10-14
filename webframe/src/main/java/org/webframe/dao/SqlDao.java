@@ -8,10 +8,15 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.webframe.Exception.NotUniqueException;
-import org.webframe.db.MapWork;
+import org.webframe.mapping.MapWork;
 import org.webframe.tools.collects.BeansUtil;
 import org.webframe.tools.systemUtil.JudgeUtil;
 
+/**
+ * sql查询dao
+ * @author 张永葑
+ *
+ */
 @SuppressWarnings("unchecked")
 public class SqlDao {
 	
@@ -69,9 +74,8 @@ public class SqlDao {
 	 * @return 分页列表(返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public List<Map<String, Serializable>> findPageCamelKeyBySql(String sql, int page, int size, Object[] params) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(sql).append(" limit ").append((page-1)*size).append(",").append(size);
-		MapWork work = new MapWork(sb.toString(), params);
+		sql += "limit "+(page-1)*size + ","+ size;
+		MapWork work = new MapWork(sql.toString(), params);
 		getSession().doWork(work);
 		return work.getMaps();
 	}

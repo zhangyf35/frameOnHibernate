@@ -9,9 +9,7 @@ import java.util.GregorianCalendar;
 /**
  * 日历日期工具类
  * @decription 提供常用的获取日期、星期、周数以及转换操作
- * @author Zebe
- * @date 2014/11/27
- * @version 1.0.2
+ * @author 张永葑
  */
 public class CalendarUtil {
 
@@ -29,6 +27,24 @@ public class CalendarUtil {
 	}
 	
 	/**
+	 * 获取当前月份
+	 * @return String 例如：4
+	 */
+	public static String getMonth() {
+		Calendar cd = Calendar.getInstance(); 
+		return String.valueOf(cd.get(Calendar.MONTH) + 1);
+	}
+	
+	/**
+	 * 获取当前日期
+	 * @return String 例如：23
+	 */
+	public static String getDay() {
+		Calendar cd = Calendar.getInstance(); 
+		return String.valueOf(cd.get(Calendar.DAY_OF_MONTH));
+	}
+	
+	/**
 	 * 获取某个日期中的年份
 	 * @return String 例如：2014-05-16 返回 2014
 	 */
@@ -42,15 +58,6 @@ public class CalendarUtil {
 		return String.valueOf(cd.get(Calendar.YEAR));
 	}
 
-	/**
-	 * 获取当前月份
-	 * @return String 例如：4
-	 */
-	public static String getMonth() {
-		Calendar cd = Calendar.getInstance(); 
-		return String.valueOf(cd.get(Calendar.MONTH) + 1);
-	}
-	
 	/**
 	 * 获取某个日期中的月份
 	 * @return String 例如：2014-05-16 返回 5
@@ -117,15 +124,6 @@ public class CalendarUtil {
 			e.printStackTrace();
 		}
 		return result;
-	}
-
-	/**
-	 * 获取当前日期
-	 * @return String 例如：23
-	 */
-	public static String getDay() {
-		Calendar cd = Calendar.getInstance(); 
-		return String.valueOf(cd.get(Calendar.DAY_OF_MONTH));
 	}
 	
 	/**
@@ -449,7 +447,6 @@ public class CalendarUtil {
 			Date debinDate = SDFT.parse(beginTime);
 			futureDate = new Date(debinDate.getTime() + (day * 24 * 60 * 60 * 1000));
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return convertDateToString(futureDate, "yyyy-MM-dd HH:mm:ss");
