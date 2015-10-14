@@ -114,10 +114,6 @@ public class JsonParser {
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 			}
 		});
-		
-		//注册默认值
-		RegisterDefaultValue.registerDefaultValue(config);
-		
 		//防止自包含
 		config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
 		return config;
