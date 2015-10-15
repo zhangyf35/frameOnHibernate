@@ -1,10 +1,19 @@
 package org.webframe.tools.json;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+
+
+
+
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONSerializer;
 import net.sf.json.JsonConfig;
@@ -18,25 +27,25 @@ import net.sf.json.util.PropertyFilter;
  *
  */
 public class JsonParser {
-	
+		
 	/**
-	 * 如果使用字段过滤注解就必须使用此方法才能有效过滤字段
+	 * 得到过滤的json字符串
 	 * @param object
+	 * @param map
 	 * @return
 	 */
-	public static String toJsonString(Object object, Map<Class<?>, Set<String>> map) {
+	private static String getFilterJsonString(Object object, Map<Class<?>, Set<String>> map) {
 		JsonConfig config = currentConfig();
 		config.setJsonPropertyFilter(new JsonFilter(map));
 		return JSONSerializer.toJSON(object, config).toString();
 	}
 	
 	/**
-	 * 自动过滤关联的字段
+	 * 得到自动过滤的json字符串
 	 * @param object
 	 * @return
 	 */
-	
-	public static String autoFilterToJsonString(Object object) {
+	private static String getAutoFilterJsonString(Object object) {
 		JsonConfig config = currentConfig();
 		config.setJsonPropertyFilter(new PropertyFilter() {
 			public boolean apply(Object cla, String field, Object fieldType) {
@@ -49,60 +58,79 @@ public class JsonParser {
 	}
 	
 	/**
+	 * 如果使用字段过滤注解就必须使用此方法才能有效过滤字段
+	 * @param object
+	 * @return
+	 */
+	public static void outFilterJsonString(Object object, Map<Class<?>, Set<String>> map, HttpServletRequest request, HttpServletResponse response) {
+		String resultJsonString = getFilterJsonString(object, map);
+		setJsonResponseParams(response);
+		outString(resultJsonString, request, response);
+	}
+	
+	/**
+	 * 自动过滤关联的字段
+	 * @param object
+	 * @return
+	 */
+	
+	public static void outAutoFilterJsonString(Object object, HttpServletRequest request, HttpServletResponse response) {
+		String resultJsonString = getAutoFilterJsonString(object);
+		setJsonResponseParams(response);
+		outString(resultJsonString, request, response);
+	}
+	
+	/**
 	 * 前端callBack函数名为jsonpCallback
 	 * @param object
 	 * @param response
 	 * @return
 	 */
-	/*public static void outFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response) {
-		JsonConfig config = currentConfig();
-		Map<String,Object> map = FilterAnnotationReader.getJsonFilters();
-		config.setJsonPropertyFilter(new JsonFilter(map));
-		String resultJSON = JSONSerializer.toJSON(object, config).toString();
-		setResponseParams(response);
-		outString(resultJSON, request, response);
+	public static void outFilterJsonP(Object object, Map<Class<?>, Set<String>> map, HttpServletRequest request, HttpServletResponse response, String jsonpCallback) {
+		String resultJsonString = getFilterJsonString(object, map);
+		setJsonpResponseParams(response);
+		outString(jsonpCallback+"("+resultJsonString+")", request, response);
 	}
 	
-	*//**
+	/**
 	 * 前端callBack函数名为jsonpCallback
 	 * @param object
 	 * @param response
 	 * @return
-	 *//*
-	public static void outAutoFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response) {
-		String resultJSON = autoFilterToJsonString(object);
-		setResponseParams(response);
-		outString(resultJSON, request, response);
+	 */
+	public static void outAutoFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response, String jsonpCallback) {
+		String resultJsonString = getAutoFilterJsonString(object);
+		setJsonpResponseParams(response);
+		outString(jsonpCallback+"("+resultJsonString+")", request, response);
 	}
 	
-	
-	
-	
-	
-	private static void setResponseParams( HttpServletResponse response) {
-		response.setContentType("text/plain");
+	private static void setJsonpResponseParams(HttpServletResponse response) {
+		response.setContentType("text/plain;charset=UTF-8");
         response.setHeader("Pragma", "No-cache");
         response.setHeader("Cache-Control", "no-cache");
         response.setDateHeader("Expires", 0);
 	}
 	
-	private static void outString(String resultJSON, HttpServletRequest request, HttpServletResponse response) {
+	private static void setJsonResponseParams(HttpServletResponse response) {
+		response.setContentType("text/plain;charset=UTF-8");
+	}
+	
+	public static void outString(String resultJsonString, HttpServletRequest request, HttpServletResponse response) {
 		try {
-			String jsonpCallback = request.getParameter("jsonpCallback");//客户端请求参数
 			PrintWriter out = response.getWriter();
-	        out.write(jsonpCallback+"("+resultJSON+")");//返回jsonp格式数据  
+	        out.write(resultJsonString);//返回jsonp格式数据  
 	        out.flush();
 	        out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}*/
+	}
 	
 	private static JsonConfig currentConfig(){
 		JsonConfig config=new JsonConfig();
 		config.setIgnoreDefaultExcludes(false);
 		//过滤hibernate懒加载
-		config.setExcludes(new String[]{"handler","hibernateLazyInitializer"});      
+		config.setExcludes(new String[]{"handler","hibernateLazyInitializer"});
 		//date格式化
 		config.registerJsonValueProcessor(Date.class, new JsonValueProcessor() {
 			public Object processObjectValue(String arg0, Object date, JsonConfig arg2) {
