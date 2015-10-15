@@ -1,13 +1,10 @@
 package org.webframe.tools.json;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONSerializer;
 import net.sf.json.JsonConfig;
@@ -27,9 +24,8 @@ public class JsonParser {
 	 * @param object
 	 * @return
 	 */
-	public static String toJsonString(Object object) {
+	public static String toJsonString(Object object, Map<Class<?>, Set<String>> map) {
 		JsonConfig config = currentConfig();
-		Map<String,Object> map = FilterAnnotationReader.getJsonFilters();
 		config.setJsonPropertyFilter(new JsonFilter(map));
 		return JSONSerializer.toJSON(object, config).toString();
 	}
@@ -44,9 +40,8 @@ public class JsonParser {
 		JsonConfig config = currentConfig();
 		config.setJsonPropertyFilter(new PropertyFilter() {
 			public boolean apply(Object cla, String field, Object fieldType) {
-				if(TypeJudger.isAttentionAnnotationField(cla.getClass(), field)){
+				if(TypeJudger.isFetchLazy(cla.getClass(), field))
 					return true;
-				}
 				return false;
 			}
 		});
@@ -59,7 +54,7 @@ public class JsonParser {
 	 * @param response
 	 * @return
 	 */
-	public static void outFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response) {
+	/*public static void outFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response) {
 		JsonConfig config = currentConfig();
 		Map<String,Object> map = FilterAnnotationReader.getJsonFilters();
 		config.setJsonPropertyFilter(new JsonFilter(map));
@@ -68,17 +63,21 @@ public class JsonParser {
 		outString(resultJSON, request, response);
 	}
 	
-	/**
+	*//**
 	 * 前端callBack函数名为jsonpCallback
 	 * @param object
 	 * @param response
 	 * @return
-	 */
+	 *//*
 	public static void outAutoFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response) {
 		String resultJSON = autoFilterToJsonString(object);
 		setResponseParams(response);
 		outString(resultJSON, request, response);
 	}
+	
+	
+	
+	
 	
 	private static void setResponseParams( HttpServletResponse response) {
 		response.setContentType("text/plain");
@@ -95,10 +94,9 @@ public class JsonParser {
 	        out.flush();
 	        out.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 	
 	private static JsonConfig currentConfig(){
 		JsonConfig config=new JsonConfig();
@@ -114,6 +112,8 @@ public class JsonParser {
 				return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date);
 			}
 		});
+		//设置数字默认值
+		TypeJudger.setNumberDefaultValue(config);
 		//防止自包含
 		config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);
 		return config;

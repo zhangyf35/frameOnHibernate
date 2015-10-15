@@ -1,33 +1,48 @@
 package org.webframe.tools.json;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
+import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import net.sf.json.JsonConfig;
+
 public class TypeJudger {
 	
-	public static Boolean isBasicClass (Object obj) {
-		if( obj instanceof Byte || obj instanceof Short ||
-			obj instanceof Integer || obj instanceof Long ||
-			obj instanceof Float || obj instanceof Double ||
-			obj instanceof Character || obj instanceof Boolean ){
-			return true;
+	private static Class<?>[] numberClass = {Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
+	
+	/**
+	 * 设置number的类型为NUll是json转换后也为null
+	 * @param config
+	 */
+	public static void setNumberDefaultValue(JsonConfig config) {
+		for (Class<?> clazz : numberClass) {
+			config.registerDefaultValueProcessor(clazz, new NumberDefaultValueProcessor());
 		}
-		return false;
 	}
 	
-	public static Boolean isAttentionAnnotationField(Class<?> cla, String fieldName) {
+	/**
+	 * 判断某一个字段是否是懒加载
+	 * @param field
+	 * @return 如果是懒加载true 反之为fasle
+	 */
+	public static Boolean isFetchLazy(Class<?> cla, String fieldName) {
 		try {
 			Field field = cla.getDeclaredField(fieldName);
-			if ( field.getAnnotation(OneToOne.class) != null  
-                 || field.getAnnotation(OneToMany.class) != null  
-                 || field.getAnnotation(ManyToOne.class) != null  
-                 || field.getAnnotation(ManyToMany.class) != null) {
-				return true;
-            }
+			if(field.isAnnotationPresent(OneToOne.class)) {
+				return field.getAnnotation(OneToOne.class).fetch() == FetchType.LAZY;
+			} else if(field.isAnnotationPresent(OneToMany.class)) {
+				return field.getAnnotation(OneToMany.class).fetch() == FetchType.LAZY;
+			} else if(field.isAnnotationPresent(ManyToOne.class)) {
+				return field.getAnnotation(ManyToOne.class).fetch() == FetchType.LAZY;
+			} else if(field.isAnnotationPresent(ManyToMany.class)) {
+				return field.getAnnotation(ManyToMany.class).fetch() == FetchType.LAZY;
+			}
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		} catch (SecurityException e) {
