@@ -8,6 +8,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;   
 import javax.servlet.http.HttpServletRequest;   
 import javax.servlet.http.HttpServletResponse;
+
+/**
+ * 过滤器得到response和request
+ * @author 张永葑
+ *
+ */
 public class ServletContentSupportFilter implements Filter {   
 	
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)

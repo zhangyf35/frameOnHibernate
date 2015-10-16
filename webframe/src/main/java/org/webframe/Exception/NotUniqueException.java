@@ -1,10 +1,12 @@
 package org.webframe.Exception;
 
+/**
+ * 不唯一异常对象
+ * @author 张永葑
+ *
+ */
 public class NotUniqueException extends RuntimeException{
 
-	/**
-	 * 不唯一异常
-	 */
 	private static final long serialVersionUID = 8328738926932944863L;
 
 	public NotUniqueException() {

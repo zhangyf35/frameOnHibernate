@@ -11,7 +11,7 @@ public class StringUtil {
 	
 	/**
 	 * 得到UUID
-	 * @return
+	 * @return UUID
 	 */
 	public static String randomUUID() {
 		return UUID.randomUUID().toString().trim().replaceAll("-", "");
@@ -20,7 +20,7 @@ public class StringUtil {
 	/**
 	 * 得到指定位数的字符串位数length必须<=128
 	 * @param length
-	 * @return
+	 * @return 指定位数的字符串
 	 */
 	public static String randomString(int length) {
 		String string = "";
@@ -37,7 +37,7 @@ public class StringUtil {
 	/**
 	 * 得到容易记住的数字
 	 * @param numCount
-	 * @return String
+	 * @return 容易记住的数字字符串
 	 */
 	public static String getEasyNumber(int numCount){
 		StringBuffer buf = new StringBuffer();
@@ -61,7 +61,7 @@ public class StringUtil {
 	/**
 	 * 将命名转换成大写字母下划线命名
 	 * @param column
-	 * @return
+	 * @return 转换后的字符串
 	 */
 	public static String toUpperUnderline(String column) {
 		return toUnderLine(column).toUpperCase();
@@ -70,7 +70,7 @@ public class StringUtil {
 	/**
 	 * 将命名转换成小写字母下划线命名
 	 * @param column
-	 * @return
+	 * @return 转换后的字符串
 	 */
 	public static String toLowerUnderline(String column) {
 		return toUnderLine(column).toLowerCase(); 
@@ -79,7 +79,7 @@ public class StringUtil {
 	/**
 	 * 将命名转换成驼峰命名
 	 * @param column
-	 * @return
+	 * @return 转换后的字符串
 	 */
 	public static String toCamel(String column) {
 		StringBuilder result = new StringBuilder();
@@ -106,7 +106,7 @@ public class StringUtil {
 	/**
 	 * 将首字母变成大写
 	 * @param str
-	 * @return
+	 * @return 转换后的字符串
 	 */
 	public static String firstToUpperCase(String str){
 		return str.substring(0, 1).toUpperCase() + str.substring(1);
@@ -116,7 +116,7 @@ public class StringUtil {
 	 * 判断一个字符串在另一个字符串出现的次数
 	 * @param str
 	 * @param target
-	 * @return
+	 * @return 次数
 	 */
 	public static int checkCharCount(String str, String target) {
 		return str.split(target,-1).length -1;
@@ -125,7 +125,7 @@ public class StringUtil {
 	/**
 	 * 将命名变为下划线格式
 	 * @param column
-	 * @return
+	 * @return 转换后的字符串
 	 */
 	private static String toUnderLine(String column) {
 		if (column==null || "".equals(column.trim())){

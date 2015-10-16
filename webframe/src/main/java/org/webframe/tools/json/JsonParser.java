@@ -32,7 +32,7 @@ public class JsonParser {
 	 * 得到过滤的json字符串
 	 * @param object
 	 * @param map
-	 * @return
+	 * @return json字符串
 	 */
 	private static String getFilterJsonString(Object object, Map<Class<?>, Set<String>> map) {
 		JsonConfig config = currentConfig();
@@ -43,7 +43,7 @@ public class JsonParser {
 	/**
 	 * 得到自动过滤的json字符串
 	 * @param object
-	 * @return
+	 * @return json字符串
 	 */
 	private static String getAutoFilterJsonString(Object object) {
 		JsonConfig config = currentConfig();
@@ -58,52 +58,61 @@ public class JsonParser {
 	}
 	
 	/**
-	 * 如果使用字段过滤注解就必须使用此方法才能有效过滤字段
-	 * @param object
-	 * @return
+	 * 过滤指定的字段
+	 * @param object 要转换的对象
+	 * @param map 要过滤的字段树
+	 * @param request 请求
+	 * @param response 响应
 	 */
 	public static void outFilterJsonString(Object object, Map<Class<?>, Set<String>> map, HttpServletRequest request, HttpServletResponse response) {
 		String resultJsonString = getFilterJsonString(object, map);
 		setJsonResponseParams(response);
-		outString(resultJsonString, request, response);
+		outString(resultJsonString, response);
 	}
 	
 	/**
 	 * 自动过滤关联的字段
-	 * @param object
-	 * @return
+	 * @param object 要转换的对象
+	 * @param request 请求
+	 * @param response 响应
 	 */
-	
 	public static void outAutoFilterJsonString(Object object, HttpServletRequest request, HttpServletResponse response) {
 		String resultJsonString = getAutoFilterJsonString(object);
 		setJsonResponseParams(response);
-		outString(resultJsonString, request, response);
+		outString(resultJsonString, response);
 	}
 	
 	/**
-	 * 前端callBack函数名为jsonpCallback
-	 * @param object
-	 * @param response
-	 * @return
+	 * jsonp,前端callBack函数名为jsonpCallback
+	 * @param object 要转换的对象
+	 * @param map 要过滤的字段树
+	 * @param request 请求
+	 * @param response 响应
+	 * @param jsonpCallback 回调函数名
 	 */
 	public static void outFilterJsonP(Object object, Map<Class<?>, Set<String>> map, HttpServletRequest request, HttpServletResponse response, String jsonpCallback) {
 		String resultJsonString = getFilterJsonString(object, map);
 		setJsonpResponseParams(response);
-		outString(jsonpCallback+"("+resultJsonString+")", request, response);
+		outString(jsonpCallback+"("+resultJsonString+")", response);
 	}
 	
 	/**
-	 * 前端callBack函数名为jsonpCallback
-	 * @param object
-	 * @param response
-	 * @return
+	 * jsonp,前端callBack函数名为jsonpCallback
+	 * @param object 要转换的对象
+	 * @param request 请求
+	 * @param response 响应
+	 * @param jsonpCallback 回调函数名
 	 */
 	public static void outAutoFilterJsonP(Object object,HttpServletRequest request, HttpServletResponse response, String jsonpCallback) {
 		String resultJsonString = getAutoFilterJsonString(object);
 		setJsonpResponseParams(response);
-		outString(jsonpCallback+"("+resultJsonString+")", request, response);
+		outString(jsonpCallback+"("+resultJsonString+")", response);
 	}
 	
+	/**
+	 * 设置jsonp  responseMIME
+	 * @param response 响应
+	 */
 	private static void setJsonpResponseParams(HttpServletResponse response) {
 		response.setContentType("text/plain;charset=UTF-8");
         response.setHeader("Pragma", "No-cache");
@@ -111,11 +120,20 @@ public class JsonParser {
         response.setDateHeader("Expires", 0);
 	}
 	
+	/**
+	 * responseMIME
+	 * @param response 响应
+	 */
 	private static void setJsonResponseParams(HttpServletResponse response) {
 		response.setContentType("text/plain;charset=UTF-8");
 	}
 	
-	public static void outString(String resultJsonString, HttpServletRequest request, HttpServletResponse response) {
+	/**
+	 * 输出字符串
+	 * @param resultJsonString json字符串
+	 * @param response 响应
+	 */
+	public static void outString(String resultJsonString, HttpServletResponse response) {
 		try {
 			PrintWriter out = response.getWriter();
 	        out.write(resultJsonString);//返回jsonp格式数据  
@@ -126,6 +144,10 @@ public class JsonParser {
 		}
 	}
 	
+	/**
+	 * 配置jsonLib
+	 * @return Json配置对象
+	 */
 	private static JsonConfig currentConfig(){
 		JsonConfig config=new JsonConfig();
 		config.setIgnoreDefaultExcludes(false);

@@ -3,6 +3,12 @@ package org.webframe.tools.json;
 import javax.servlet.http.HttpServletRequest;   
 import javax.servlet.http.HttpServletResponse;   
 import javax.servlet.http.HttpSession;   
+
+/**
+ * response和request和session获取类
+ * @author 张永葑
+ *
+ */
 public class HttpServiceContent {   
 	
     private static ThreadLocal<HttpServletRequest> requestLocal= new ThreadLocal<HttpServletRequest>();   

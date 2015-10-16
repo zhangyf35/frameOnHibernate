@@ -12,7 +12,7 @@ public class EncodeUtil {
 	 * 加密算法
 	 * @param str 需要加密的字符串
 	 * @param randomString 随机字符串
-	 * @return 
+	 * @return 加密后的字符串
 	 */
 	public static String encode(String str, String randomString) {
 		return DigestUtils.md5Hex(DigestUtils.md5Hex(str) + randomString + DigestUtils.md5Hex(str)+randomString);

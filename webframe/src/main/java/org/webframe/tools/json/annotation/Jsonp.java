@@ -13,5 +13,10 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Jsonp {
+	
+	/**
+	 * 回调函数的参数名
+	 * @return 传递回调函数的参数名
+	 */
 	String callbackParamName() default "callback";
 }

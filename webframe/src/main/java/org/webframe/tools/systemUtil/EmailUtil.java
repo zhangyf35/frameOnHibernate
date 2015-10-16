@@ -17,9 +17,20 @@ import javax.mail.internet.MimeMessage;
  */
 public class EmailUtil {
 	
-	public static final String[] SOHU_EMAIL = {"smtp.sohu.com","25"}; // 搜狐邮箱配置
-	public static final String[] SINA_EMAIL = {"smtp.sina.com","587"}; // 新浪邮箱配置
-	public static final String[] QQ_EMAIL = {"smtp.qq.com","25"}; // qq邮箱配置
+	/**
+	 * 搜狐邮箱配置
+	 */
+	public static final String[] SOHU_EMAIL = {"smtp.sohu.com","25"};
+	
+	/**
+	 * 新浪邮箱配置
+	 */
+	public static final String[] SINA_EMAIL = {"smtp.sina.com","587"};
+	
+	/**
+	 * qq邮箱配置
+	 */
+	public static final String[] QQ_EMAIL = {"smtp.qq.com","25"};
 	
 	/**
 	 * 发送邮件
@@ -32,20 +43,30 @@ public class EmailUtil {
 	 */
 	public static void sendEmailMessage(String[] emailType,String fromAccount,String fromPassword,String toAccount, String subject,String content){
 		Properties properties = new Properties();
-		properties.setProperty("mail.transport.protocol", "smtp"); // 发送邮件协议
-		properties.setProperty("mail.smtp.auth", "true"); // 需要验证
-		properties.setProperty("mail.debug", "true"); // 设置debug模式 后台输出邮件发送的过程
+		 // 发送邮件协议
+		properties.setProperty("mail.transport.protocol", "smtp");
+		// 需要验证
+		properties.setProperty("mail.smtp.auth", "true");
+		// 设置debug模式 后台输出邮件发送的过程
+		properties.setProperty("mail.debug", "true"); 
 		Session session = Session.getInstance(properties);
-		session.setDebug(true); // debug模式
-		Message messgae = new MimeMessage(session); // 邮件信息
+		// debug模式
+		session.setDebug(true); 
+		// 邮件信息
+		Message messgae = new MimeMessage(session); 
 		try {
-			messgae.setFrom(new InternetAddress(fromAccount)); // 设置发送人
-			messgae.setText(content); // 设置邮件内容
-			messgae.setSubject(subject); // 设置邮件主题
+			// 设置发送人
+			messgae.setFrom(new InternetAddress(fromAccount)); 
+			// 设置邮件内容
+			messgae.setText(content); 
+			// 设置邮件主题
+			messgae.setSubject(subject); 
 			// 发送邮件
 			Transport tran = session.getTransport(); 
-			tran.connect(emailType[0], Integer.parseInt(emailType[1]), fromAccount, fromPassword);//连接到QQ邮箱服务器
-			tran.sendMessage(messgae, new Address[] { new InternetAddress(toAccount) });// 设置邮件接收人
+			//连接到QQ邮箱服务器
+			tran.connect(emailType[0], Integer.parseInt(emailType[1]), fromAccount, fromPassword);
+			// 设置邮件接收人
+			tran.sendMessage(messgae, new Address[] { new InternetAddress(toAccount) });
 			tran.close();
 		} catch (AddressException e) {
 			e.printStackTrace();

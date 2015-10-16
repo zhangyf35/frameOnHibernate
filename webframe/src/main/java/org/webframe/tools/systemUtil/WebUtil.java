@@ -21,8 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 /**
- * WEB工具类
- * @description 提供WEB请求的常用方法
+ * WEB工具类,提供WEB请求的常用方法
  * @author 张永凤
  */
 @SuppressWarnings("deprecation")
@@ -30,7 +29,7 @@ public class WebUtil {
 	
 	/**
 	 * 获取httpClient
-	 * @return
+	 * @return HttpClient
 	 */
 	public static HttpClient getHttpClient(){
 		return new DefaultHttpClient();
@@ -83,7 +82,6 @@ public class WebUtil {
 	/**
 	 * 发送get请求
 	 * @param uri 请求地址
-	 * @param parameters 参数
 	 * @param defaultCharset 默认编码
 	 * @return 服务器响应的字符串
 	 */
@@ -107,7 +105,6 @@ public class WebUtil {
 	/**
 	 * 发送get请求(默认编码为UTF-8)
 	 * @param uri 请求地址
-	 * @param parameters 参数
 	 * @return 服务器响应的字符串
 	 */
 	public static  String sendRequestByGet(String uri){

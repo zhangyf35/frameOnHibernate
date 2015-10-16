@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /**
  * 数字工具类
- * @decription 提供基于数字的各种方法，例如加减乘除四则运算（精确），生成随机数等
+ * ,提供基于数字的各种方法，例如加减乘除四则运算（精确），生成随机数等
  * @author 张永葑
  */
 public class NumberUtil {

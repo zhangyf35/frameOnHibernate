@@ -6,12 +6,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webframe.common.Pager;
-import org.webframe.tools.collects.BeansUtil;
 
 /**
- * 全局service，包含所有基本操作，请在spring配置文件中加入该类
- * @author Administrator
- *
+ * 全局service，包含所有基本操作<br>
+ * 在spring-config.xml中配置该bean
+ * @author 张永葑
  */
 @Service
 @Transactional
@@ -20,41 +19,42 @@ public class GlobalService extends SqlService{
 	
 	/**
 	 * 添加一个对象
-	 * @param obj 需要添加的对象
+	 * @param object 需要添加的对象
 	 * @return 返回插入新对象的主键
 	 */
-	public <T> Serializable save(T obj) {
-		return globalDao.addObject(obj);
+	public <T> Serializable save(T object) {
+		return globalDao.addObject(object);
 	}
 
 	/**
 	 * 删除一个对象，对象中只包含对象的主键即可
-	 * @param obj 映射模型
+	 * @param object 映射模型
 	 */
-	public <T> void remove(T obj) {
-		globalDao.deleteObject(obj);
+	public <T> void remove(T object) {
+		globalDao.deleteObject(object);
 	}
 
 	/**
-	 * 动态更新一个对象，此更新方法只更新对象中属性不为null的值，对象中的id为必须值<br>
-	 * 如果hibernate设置了动态更新，则只发出不为null的属性的sql，如果不设置动态更新则发出修改全部属性的sql,但为null的属性不会得到修改<br>
+	 * 更新一个对象，此更新方法只更新对象中属性不为null的值，对象中的id为必须值<br>
+	 * 如果hibernate设置了动态更新，则只发出不为null的属性的sql，如果不设置动态更新则发出修改全部属性的sql<br>
+	 * 为了提高插入效率建议开启动态更新<br>
 	 * 动态更新参考(在entity的类上注解)：<br>
 	 * hibernate 3.x：@org.hibernate.annotations.Entity(dynamicUpdate=true)<br>
 	 * hibernate 4.x：@dynamicUpdate(true)
-	 * @param obj 映射模型
+	 * @param object 映射模型
 	 * @return 新的完整对象
 	 */
-	public <T> T modifyForDynamic(T obj) {
-		return globalDao.updateForDynamicObject(obj);
+	public <T> T modify(T object) {
+		return globalDao.updateObject(object);
 	}
 	
 	/**
-	 * 更新一个对象,对对象中的全部属性进行修改
+	 * 更新一个对象,对对象中的全部属性进行修改，对象中的id为必须值<br>
 	 * 此更新方法如果对象属性为null，则数据库对应字段修改为null
-	 * @param obj
+	 * @param object
 	 */
-	public void modify(Object obj) {
-		globalDao.updateObject(obj);
+	public void modifyForNull(Object object) {
+		globalDao.updateObjectForNull(object);
 	}
 	
 	/**
@@ -72,10 +72,10 @@ public class GlobalService extends SqlService{
 	 * 注意:如果返回普通类型请使用Serializable接收返回值
 	 * @param hql hql语句   参数用?(英文状态下)表示
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @return 
+	 * @return 任意对象，查询的什么返回什么
 	 */
-	public <T> T unique(String hql, Object[] hqlParams) {
-		return (T) globalDao.findUnique(hql, hqlParams);
+	public <T> T unique(String hql, Object[] params) {
+		return (T) globalDao.findUnique(hql, params);
 	}
 	
 	/**
@@ -93,8 +93,8 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> list(String hql, Object[] hqlParams){
-		return (List<T>) globalDao.findList(hql, hqlParams);
+	public <T> List<T> list(String hql, Object[] params){
+		return (List<T>) globalDao.findList(hql, params);
 	}
 	
 	/**
@@ -104,8 +104,8 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listLimitCount(int count, String hql, Object[] hqlParams){
-		return (List<T>) globalDao.findPage(hql, 1, count, hqlParams);
+	public <T> List<T> listLimitCount(String hql, Object[] params, int count){
+		return (List<T>) globalDao.findPage(hql, params, 1, count);
 	}
 	
 	/**
@@ -114,20 +114,11 @@ public class GlobalService extends SqlService{
 	 * @param page 当前页
 	 * @param size 每页条数
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @return 查询的数据包含在 Pager中的rows属性中,为 list类型<br>
-	 * 	(如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
+	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
+	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> page(String hql, int page, int size, Object[] hqlParams) {
-		Pager<T> pager = new Pager<T>(page, size);
-		long total = globalDao.getDataTotal(hql, hqlParams);
-		pager.setTotal(total);
-		if(total == 0){
-			pager.setRows((List<T>) BeansUtil.newArrayList());
-			return pager;
-		}
-		List<T> Objects = (List<T>) globalDao.findPage(hql, page, size, hqlParams);
-		pager.setRows(Objects);
-		return pager;
+	public <T> Pager<T> page(String hql, Object[] params, int page, int size) {
+		return globalDao.findPage(hql, params, page, size);
 	}
 	
 }

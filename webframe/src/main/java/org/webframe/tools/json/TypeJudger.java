@@ -12,6 +12,11 @@ import javax.persistence.OneToOne;
 
 import net.sf.json.JsonConfig;
 
+/**
+ * json过滤类型配置类
+ * @author 张永葑
+ *
+ */
 public class TypeJudger {
 	
 	private static Class<?>[] numberClass = {Byte.class, Short.class, Integer.class, Long.class,
@@ -29,7 +34,8 @@ public class TypeJudger {
 	
 	/**
 	 * 判断某一个字段是否是懒加载
-	 * @param field
+	 * @param cla 类
+	 * @param fieldName 字段名
 	 * @return 如果是懒加载true 反之为fasle
 	 */
 	public static Boolean isFetchLazy(Class<?> cla, String fieldName) {

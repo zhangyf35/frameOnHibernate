@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
  * 当两个类有相同的字段名时,如User中有name,Order中有name,但是我仅仅是不转换User中的name<br>
  * 这种情况适合用@JsonFiltersToClass<br>
  * 如果过滤几个对象中没有要过滤的相同的字段名,那么使用@JsonFilterToFields
- * @author 张永峰
+ * @author 张永葑
  *
  */
 @Target(METHOD)

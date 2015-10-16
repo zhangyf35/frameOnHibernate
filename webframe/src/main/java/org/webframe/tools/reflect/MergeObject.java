@@ -23,8 +23,7 @@ public class MergeObject {
 			Field[] fields = cla.getDeclaredFields();
 			for (Field field : fields) {
 				field.setAccessible(true);
-				Object value;
-				value = field.get(current);
+				Object value = field.get(current);
 				if (value != null) {
 					field.set(target, value);
 				}
@@ -39,7 +38,7 @@ public class MergeObject {
 	/**
 	 * 取出对象的id值
 	 * @param current
-	 * @return
+	 * @return entity中的id的值
 	 */
 	public static Serializable getId(Object current) {
 		try {

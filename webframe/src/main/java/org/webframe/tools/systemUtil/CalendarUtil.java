@@ -8,11 +8,11 @@ import java.util.GregorianCalendar;
 
 /**
  * 日历日期工具类
- * @decription 提供常用的获取日期、星期、周数以及转换操作
+ * ,提供常用的获取日期、星期、周数以及转换操作
  * @author 张永葑
  */
 public class CalendarUtil {
-
+	
 	private static int WEEKS = 0;
 	private static SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 	private static SimpleDateFormat SDFT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -306,7 +306,6 @@ public class CalendarUtil {
 
 	/**
 	 * 获取本月第一天
-	 * @param date
 	 * @return yyyy-MM-dd
 	 */
 	public static String getFirstDayOfThisMonth() {
@@ -320,7 +319,6 @@ public class CalendarUtil {
 	
 	/**
 	 * 获取本月最后一天
-	 * @param date
 	 * @return yyyy-MM-dd
 	 */
 	public static String getLastDayOfThisMonth() {
@@ -336,7 +334,8 @@ public class CalendarUtil {
 
 	/**
 	 * 获取指定年份月份的最后一天（整形参数）
-	 * @param month
+	 * @param year 年份
+	 * @param month 月份
 	 * @return yyyy-MM-dd
 	 */
 	public static String getLastDayOfMonth(int year, int month) {
@@ -352,7 +351,8 @@ public class CalendarUtil {
 	
 	/**
 	 * 获取指定年份月份的最后一天（字符串参数）
-	 * @param month
+	 * @param year 年份
+	 * @param month 月份
 	 * @return yyyy-MM-dd
 	 */
 	public static String getLastDayOfMonth(String year, String month) {
@@ -436,7 +436,7 @@ public class CalendarUtil {
 	
 	/**
 	 * 获取基于某个时间点后多少天后的时间点
-	 * @description 如：2015-08-01 16:00:05，15天之后的时间点是
+	 * ，如：2015-08-01 16:00:05，15天之后的时间点是
 	 * @param beginTime 开始时间点 yyyy-MM-dd HH:mm:ss
 	 * @param day 天数
 	 * @return String yyyy-MM-dd HH:mm:ss
@@ -450,47 +450,6 @@ public class CalendarUtil {
 			e.printStackTrace();
 		}
 		return convertDateToString(futureDate, "yyyy-MM-dd HH:mm:ss");
-	}
-
-	/**
-	 * 方法测试
-	 * @param args
-	 * @throws ParseException 
-	 */
-	public static void main(String[] args) throws ParseException {		
-		System.out.println("获取当前年：" + getYear());
-		System.out.println("获取日期中的年份：" + getYearOfDate("2012-12-08"));
-		System.out.println("获取当前月：" + getMonth());
-		System.out.println("获取日期中的月份：" + getMonthOfDate("2012-12-08"));
-		System.out.println("获取当前日：" + getDay());
-		System.out.println("获取日期中的日：" + getDayOfDate("2012-12-08"));
-		System.out.println("获取昨天日期：" + getYesterday());
-		System.out.println("获取今天日期：" + getToday());
-		System.out.println("获取明天日期：" + getTommorow());
-		System.out.println("获取当前日期和时间：" + getDateTime());
-		System.out.println("获得当前日期与本周一相差的天数：" + getMondayPlus());
-		System.out.println("获得上周星期一的日期：" + getPreMonday());
-		System.out.println("获得上周星期日的日期：" + getSunday());
-		System.out.println("获得本周星期一的日期：" + getMonday());
-		System.out.println("获得本周星期日的日期：" + getSunday());
-		System.out.println("获得下周星期一的日期：" + getNextMonday());
-		System.out.println("获得下周星期日的日期：" + getSunday());
-		System.out.println("获取当前周是本月的第几周：" + getWeekOfMonth());
-		System.out.println("获取当前周是本年的第几周：" + getWeekOfYear());
-		System.out.println("获取本月第一天：" + getFirstDayOfThisMonth());
-		System.out.println("获取本月最后一天：" + getLastDayOfThisMonth());
-		System.out.println("获取指定年份月份最后一天：" + getLastDayOfMonth(2044, 2) + " <2044年2月>");
-		System.out.println("获取两个日期之间相差天数：" + getDaysBetween("2014-09-30", "2014-10-02") + " <2014-09-30~2014-12-02>");
-		System.out.println("获取某一年第几周的星期一：" + getMondayOfWeek(2014, 51));
-		System.out.println("获取某一年第几周的星期日：" + getSundayOfWeek(2014, 51));		
-		System.out.println("按照 yyy-M-d HH:mm 格式得到当前日期时间：" + convertDateToString(new Date(), "yyyy-M-d HH:mm"));
-		System.out.println("5分钟前的时间：" + getPastTimeByMinute(5));
-		System.out.println("2天前的此时此刻：" + getPastTimeByDay(2));
-		System.out.println("时间点 2015-08-21 16:00:05，12天之后的时间点是" + getFutureTimeByDay("2015-08-21 16:00:05", 12));
-		
-		String day15Ago = "2015-08-01 12:06:20";
-		Date date15Ago = SDFT.parse(day15Ago);
-		System.out.println("2015-08-01 12:06:20 的整数时间点是" + date15Ago.getTime());
 	}
 
 }

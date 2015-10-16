@@ -13,11 +13,8 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 验证码工具类
- * @decription 提供验证码生成功能
+ * 验证码工具类，提供验证码生成功能
  * @author 张永葑
- * @date 2015/7/30
- * @version 1.0.0
  */
 public class Captcha {
 	
@@ -68,7 +65,6 @@ public class Captcha {
 	 * @param text 字符内容
 	 * @param width 图片宽度
 	 * @param height 图片高度
-	 * @param codeCount 字符个数
 	 * @param lineCount 干扰线条数
 	 */
 	public  Captcha(String text, int width, int height, int lineCount) {
@@ -197,7 +193,7 @@ public class Captcha {
 	}
 	/**
 	 * 将验证码图片输出到前端
-	 * @param sos
+	 * @param response
 	 * @throws IOException
 	 */
 	public void write(HttpServletResponse response) throws IOException {
@@ -222,7 +218,7 @@ public class Captcha {
 	
 	/**
 	 * 获得缓冲图片
-	 * @return
+	 * @return BufferedImage
 	 */
 	public BufferedImage getBuffImg() {
 		return buffImg;

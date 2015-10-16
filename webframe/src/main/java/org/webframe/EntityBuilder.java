@@ -6,9 +6,19 @@ import java.io.IOException;
 
 import org.webframe.tools.systemUtil.StringUtil;
 
-
+/**
+ * 数据转换对象<br>
+ * 将表的DDL小括号中的信息复制到你定义的文件中，然后转换成hibernate标准的entity
+ * @author 张永葑
+ *
+ */
 public class EntityBuilder {
 	
+	/**
+	 * 转换方法
+	 * @param filePath 你定义的文件路径，该文件中包含了表信息
+	 * @throws IOException
+	 */
 	public static void produceEntity(String filePath) throws IOException {
 		
 		BufferedReader reader = new BufferedReader(new FileReader(filePath));
@@ -69,9 +79,5 @@ public class EntityBuilder {
 		System.out.print(columns.toString());
 		System.out.print(getAndSetter.toString());
 		reader.close();
-	}
-	
-	public static void main(String[] args) throws IOException {
-		produceEntity("src/main/java/org/mosquito/gen.txt");
 	}
 }

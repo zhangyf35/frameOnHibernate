@@ -13,12 +13,17 @@ import org.webframe.tools.collects.BeansUtil;
 import org.webframe.tools.reflect.formater.DateTimeConverter;
 
 /**
- * Map工具类（目前没有使用）
+ * Map工具类（目前没有使用）<br>
+ * 提供了将map装换为对象，或将对象转换为map（字段名为key，字段值为value）
  * @author 张永葑
  * 
  */
 public class MapUtils extends org.apache.commons.collections.MapUtils {
-
+	
+	/**
+	 * 获取BeanUtilsBean 已经注册了Date转换
+	 * @return BeanUtilsBean实例
+	 */
 	private static BeanUtilsBean getBeanUtilsBean() {
 		BeanUtilsBean beanUtilsBean = null;
 		try {
@@ -35,12 +40,9 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 	
 	/**
 	 * 将Map转换为Object
-	 * 
-	 * @param clazz
-	 *            目标对象的类
-	 * @param map
-	 *            待转换Map
-	 * @return
+	 * @param clazz 目标对象的类
+	 * @param map 待转换Map
+	 * @return 转换后的对象
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
@@ -59,12 +61,9 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 
 	/**
 	 * 将Map转换为Object
-	 * 
-	 * @param object
-	 *            目标对象
-	 * @param map
-	 *            待转换Map
-	 * @return
+	 * @param object 目标对象
+	 * @param map 待转换Map
+	 * @return 转换后的对象
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
@@ -82,10 +81,8 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 
 	/**
 	 * 对象转Map
-	 * 
-	 * @param object
-	 *            目标对象
-	 * @return
+	 * @param object 目标对象
+	 * @return 转换后的Map
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
@@ -105,11 +102,9 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 	}
 
 	/**
-	 * 转换为Collection<Map<K, V>>
-	 * 
-	 * @param collection
-	 *            待转换对象集合
-	 * @return 转换后的Collection<Map<K, V>>
+	 * 转换为List<Map<K, V>>
+	 * @param list 待转换对象集合
+	 * @return 转换后的List<Map<K, V>>
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException
@@ -127,9 +122,9 @@ public class MapUtils extends org.apache.commons.collections.MapUtils {
 	
 	/**
 	 * 将list<Map>转换为List<T>
-	 * @param cla
-	 * @param list
-	 * @return
+	 * @param cla 目标对象的类
+	 * @param list 数据list
+	 * @return 转换后的列表对象
 	 * @throws IllegalAccessException
 	 * @throws InvocationTargetException
 	 * @throws NoSuchMethodException

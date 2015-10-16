@@ -5,6 +5,11 @@ import java.util.Set;
 
 import net.sf.json.util.PropertyFilter;
 
+/**
+ * json过滤配置类
+ * @author 张永葑
+ *
+ */
 class JsonFilter implements PropertyFilter{
 	
 	Map<Class<?>,Set<String>> map = null;
