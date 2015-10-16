@@ -3,10 +3,10 @@ package org.webframe.tools.json;
 import javax.servlet.http.HttpServletRequest;   
 import javax.servlet.http.HttpServletResponse;   
 import javax.servlet.http.HttpSession;   
-public class SysContent {   
+public class HttpServiceContent {   
 	
-     private static ThreadLocal<HttpServletRequest> requestLocal= new ThreadLocal<HttpServletRequest>();   
-     private static ThreadLocal<HttpServletResponse> responseLocal= new ThreadLocal<HttpServletResponse>();   
+    private static ThreadLocal<HttpServletRequest> requestLocal= new ThreadLocal<HttpServletRequest>();   
+    private static ThreadLocal<HttpServletResponse> responseLocal= new ThreadLocal<HttpServletResponse>();   
         
     public static HttpServletRequest getRequest() {   
         return (HttpServletRequest)requestLocal.get();   

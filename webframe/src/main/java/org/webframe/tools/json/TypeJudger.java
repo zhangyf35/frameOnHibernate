@@ -14,7 +14,8 @@ import net.sf.json.JsonConfig;
 
 public class TypeJudger {
 	
-	private static Class<?>[] numberClass = {Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, BigInteger.class, BigDecimal.class};
+	private static Class<?>[] numberClass = {Byte.class, Short.class, Integer.class, Long.class,
+								Float.class, Double.class, BigInteger.class, BigDecimal.class};
 	
 	/**
 	 * 设置number的类型为NUll是json转换后也为null

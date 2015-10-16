@@ -12,8 +12,8 @@ public class ServletContentSupportFilter implements Filter {
 	
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     		throws IOException, ServletException {
-        SysContent.setRequest((HttpServletRequest) request);   
-        SysContent.setResponse((HttpServletResponse) response);   
+        HttpServiceContent.setRequest((HttpServletRequest) request);   
+        HttpServiceContent.setResponse((HttpServletResponse) response);   
         chain.doFilter(request, response);
     }
     
