@@ -42,42 +42,44 @@ public class JsonFilterInterceptor {
     	//得到返回对象
     	Object object = pjp.proceed();//执行该方法  
     	//判断是否返回为json
-    	if(method.isAnnotationPresent(ResponseBody.class)) {
-    		HttpServletRequest request = HttpServiceContent.getRequest();
-			HttpServletResponse response = HttpServiceContent.getResponse();
-			//如果返回的不是字符串
-    		if (! object.getClass().getSimpleName().equals("String")) {
-    			//如果是发送jsonp
-    			if(method.isAnnotationPresent(Jsonp.class)) {
-    				String callbackParam = request.getParameter(method.getAnnotation(Jsonp.class).callbackParamName());
-    				//自定义过滤
-    				if (method.isAnnotationPresent(JsonFilterProperties.class)) {
-        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
-        				JsonParser.outFilterJsonP(object, map, request, response, callbackParam);
-        			}
-    				//自动过滤
-    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) {
-        				JsonParser.outAutoFilterJsonP(object, request, response, callbackParam);
-        			}
-    			}
-    			//如果是发送json
-    			else {
-    				// 定义过滤
-    				if (method.isAnnotationPresent(JsonFilterProperties.class)) { 
-        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
-        				JsonParser.outFilterJsonString(object, map, request, response);;
-        			}
-    				//自动过滤
-    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) { 
-        				JsonParser.outAutoFilterJsonString(object, request, response);
-        			}
-    			}
-    		} 
-    		//如果返回的是字符串
-    		else {
-    			JsonParser.outString(String.valueOf(object), response);
-    		}
-    		return null;
+    	if(object != null) {
+	    	if(method.isAnnotationPresent(ResponseBody.class)) {
+	    		HttpServletRequest request = HttpServiceContent.getRequest();
+				HttpServletResponse response = HttpServiceContent.getResponse();
+				//如果返回的不是字符串
+	    		if (! object.getClass().getSimpleName().equals("String")) {
+	    			//如果是发送jsonp
+	    			if(method.isAnnotationPresent(Jsonp.class)) {
+	    				String callbackParam = request.getParameter(method.getAnnotation(Jsonp.class).callbackParamName());
+	    				//自定义过滤
+	    				if (method.isAnnotationPresent(JsonFilterProperties.class)) {
+	        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
+	        				JsonParser.outFilterJsonP(object, map, request, response, callbackParam);
+	        			}
+	    				//自动过滤
+	    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) {
+	        				JsonParser.outAutoFilterJsonP(object, request, response, callbackParam);
+	        			}
+	    			}
+	    			//如果是发送json
+	    			else {
+	    				// 定义过滤
+	    				if (method.isAnnotationPresent(JsonFilterProperties.class)) { 
+	        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
+	        				JsonParser.outFilterJsonString(object, map, request, response);;
+	        			}
+	    				//自动过滤
+	    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) { 
+	        				JsonParser.outAutoFilterJsonString(object, request, response);
+	        			}
+	    			}
+	    		} 
+	    		//如果返回的是字符串
+	    		else {
+	    			JsonParser.outString(String.valueOf(object), response);
+	    		}
+	    		return null;
+	    	}
     	}
     	return object;
     }

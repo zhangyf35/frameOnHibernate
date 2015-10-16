@@ -34,7 +34,7 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> listMap(String sql, Object[] params){
+	public List<Map<String, Serializable>> listMapBySql(String sql, Object[] params){
 		return globalDao.findListMapBysql(sql, params);
 	}
 	
@@ -47,7 +47,7 @@ public class SqlService {
 	 * @param params 查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> ListMapBysql(String sql, Object[] params, int count){
+	public List<Map<String, Serializable>> listMapByCountSql(String sql, Object[] params, int count){
 		return globalDao.findListMapByCount(sql, params, count);
 	}
 	
@@ -63,7 +63,7 @@ public class SqlService {
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
 	public Pager<Map<String,Serializable>> pageBySql(String sql, Object[] params, int page, int size) {
-		return globalDao.findPageCamelKeyBySql(sql, params, page, size);
+		return globalDao.findPageBySql(sql, params, page, size);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
 	 */
-	public Map<String, Serializable> mapBySql(String sql, Object[] params) {
+	public Map<String, Serializable> uniqueMapBySql(String sql, Object[] params) {
 		return globalDao.findMapBySql(sql, params);
 	}
 	

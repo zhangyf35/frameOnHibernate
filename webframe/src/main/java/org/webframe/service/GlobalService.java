@@ -104,7 +104,7 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listLimitCount(String hql, Object[] params, int count){
+	public <T> List<T> listByCount(String hql, Object[] params, int count){
 		return (List<T>) globalDao.findPage(hql, params, 1, count);
 	}
 	

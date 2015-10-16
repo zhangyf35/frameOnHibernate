@@ -83,7 +83,7 @@ public class SqlDao {
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public List<Map<String, Serializable>> findListMapByCount(String sql, Object[] params, int count) {
-		return findListMapLimit(sql, params, 0, count);
+		return findListMapLimit(sql, params, 1, count);
 	}
 	
 	/**
@@ -109,7 +109,7 @@ public class SqlDao {
 	 * @param size 每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据
 	 */
-	public Pager<Map<String,Serializable>> findPageCamelKeyBySql(String sql, Object[] params, int page, int size) {
+	public Pager<Map<String,Serializable>> findPageBySql(String sql, Object[] params, int page, int size) {
 		Pager<Map<String,Serializable>> pager = new Pager<Map<String,Serializable>>(page, size);
 		String newSql = "select count(*) as count from ("+sql+") as newTable";
 		long total = Long.parseLong(String.valueOf(findMapBySql(newSql, null).get("count"))) ;
@@ -117,7 +117,7 @@ public class SqlDao {
 		if(total == 0){
 			return pager;
 		}
-		pager.setRows(findListMapLimit(newSql, params, page, size));
+		pager.setRows(findListMapLimit(sql, params, page, size));
 		return pager;
 	}
 	

@@ -98,7 +98,7 @@ public class GlobalDao extends SqlDao{
 	 * @return 任意对象，查询的什么返回什么
 	 */
 	public <T> T findUnique(String hql, Object[] params) {
-		return (T) getQuery(hql, params).uniqueResult();
+		return (T) getQuery(hql, params).setFirstResult(0).setMaxResults(2).uniqueResult();
 	}
 	
 	/**
