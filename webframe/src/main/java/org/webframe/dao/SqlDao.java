@@ -7,11 +7,10 @@ import java.util.Map;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.webframe.Exception.NotUniqueException;
 import org.webframe.common.Pager;
+import org.webframe.mapping.ListMapWork;
 import org.webframe.mapping.MapWork;
 import org.webframe.tools.collects.BeansUtil;
-import org.webframe.tools.systemUtil.JudgeUtil;
 
 /**
  * sql查询dao<br>
@@ -50,6 +49,20 @@ public class SqlDao {
 	}
 	
 	/**
+	 * sql查询单一对象<br>
+	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
+	 * @param sql sql语句   参数用 ? (英文状态下)表示
+	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
+	 */
+	public Map<String, Serializable> findMapBySql(String sql, Object[] params) {
+		MapWork work = new MapWork(sql, params);
+		getSession().doWork(work);
+		return work.getMaps();
+	}
+	
+	
+	/**
 	 * sql查询map列表<br>
 	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
 	 * @param sql sql语句   参数用 ? (英文状态下)表示
@@ -57,27 +70,35 @@ public class SqlDao {
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public List<Map<String, Serializable>> findListMapBysql(String sql, Object[] params){
-		MapWork work = new MapWork(sql, params);
+		ListMapWork work = new ListMapWork(sql, params);
 		getSession().doWork(work);
 		return work.getMaps();
 	}
 	
 	/**
-	 * sql查询单一对象<br>
-	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
+	 * 查询指定条数的List<Map<String, Serializable>>
 	 * @param sql sql语句   参数用 ? (英文状态下)表示
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
+	 * @param count 查询的条数
+	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public Map<String, Serializable> findMapCamelKeyBySql(String sql, Object[] params) {
-		List<Map<String, Serializable>> list = findListMapBysql(sql, params);
-		if (! JudgeUtil.listIsNullAndEmpty(list)) {
-			if (list.size() > 1) {
-				throw new NotUniqueException("query did not return a unique result: " +list.size());
-			}
-			return list.get(0);
-		}
-		return null;
+	public List<Map<String, Serializable>> findListMapByCount(String sql, Object[] params, int count) {
+		return findListMapLimit(sql, params, 0, count);
+	}
+	
+	/**
+	 * 获取指定页，指定条数的listMap
+	 * @param sql sql语句   参数用 ? (英文状态下)表示
+	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param page 当前页
+	 * @param size 当前条数
+	 * @return List<Map<String, Serializable>>
+	 */
+	protected List<Map<String, Serializable>> findListMapLimit(String sql, Object[] params, int page, int size) {
+		sql += " limit "+(page-1)*size + ","+ size;
+		ListMapWork work = new ListMapWork(sql, params);
+		getSession().doWork(work);
+		return work.getMaps();
 	}
 	
 	/**
@@ -91,15 +112,12 @@ public class SqlDao {
 	public Pager<Map<String,Serializable>> findPageCamelKeyBySql(String sql, Object[] params, int page, int size) {
 		Pager<Map<String,Serializable>> pager = new Pager<Map<String,Serializable>>(page, size);
 		String newSql = "select count(*) as count from ("+sql+") as newTable";
-		long total = Long.parseLong(String.valueOf(findMapCamelKeyBySql(newSql, null).get("count"))) ;
+		long total = Long.parseLong(String.valueOf(findMapBySql(newSql, null).get("count"))) ;
 		pager.setTotal(total);
 		if(total == 0){
 			return pager;
 		}
-		sql += "limit "+(page-1)*size + ","+ size;
-		MapWork work = new MapWork(sql.toString(), params);
-		getSession().doWork(work);
-		pager.setRows(work.getMaps());
+		pager.setRows(findListMapLimit(newSql, params, page, size));
 		return pager;
 	}
 	

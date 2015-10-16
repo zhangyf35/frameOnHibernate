@@ -88,7 +88,7 @@ public class GlobalService extends SqlService{
 	}
 	
 	/**
-	 * 用hql对象查询返回指定条数的对象集合
+	 * 用hql对象查询的对象集合
 	 * @param hql hql语句   参数用 ? (英文状态下)表示
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)

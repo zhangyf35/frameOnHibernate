@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.jdbc.Work;
@@ -14,7 +15,7 @@ import org.hibernate.jdbc.Work;
  * @author 张永葑
  *
  */
-public class MapWork implements Work{
+public class ListMapWork implements Work{
 	
 	/**
 	 * sql语句
@@ -24,7 +25,7 @@ public class MapWork implements Work{
 	/**
 	 * 转换后的数据
 	 */
-	protected Map<String, Serializable> map = null;
+	protected List<Map<String, Serializable>> list = null;
 	
 	/**
 	 * sql参数
@@ -36,7 +37,7 @@ public class MapWork implements Work{
 	 * @param sql sql语句
 	 * @param params sql参数
 	 */
-	public MapWork(String sql, Object[] params) {
+	public ListMapWork(String sql, Object[] params) {
 		this.sql = sql;
 		this.params = params;
 	}
@@ -45,18 +46,18 @@ public class MapWork implements Work{
 	 * 接口方法，获取数据库连接
 	 */
 	public void execute(Connection connection) throws SQLException {
-		PreparedStatement ps = connection.prepareStatement(sql+ " limit 0,2");
+		PreparedStatement ps = connection.prepareStatement(sql);
 		setParams(ps, params);
 		ResultSet rs =  ps.executeQuery();
-		this.map = new DataReader().getMap(rs);
+		this.list = new DataReader().getMaps(rs);
 	}
 	
 	/**
-	 * 获取转换后的map
-	 * @return 转换后的map
+	 * 获取转换后的list
+	 * @return 转换后的list
 	 */
-	public Map<String, Serializable> getMaps() {
-		return this.map;
+	public List<Map<String, Serializable>> getMaps() {
+		return this.list;
 	}
 	
 	public void setParams(PreparedStatement ps, Object[] params) throws SQLException {

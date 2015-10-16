@@ -34,8 +34,21 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> listMapBysql(String sql, Object[] params){
+	public List<Map<String, Serializable>> listMap(String sql, Object[] params){
 		return globalDao.findListMapBysql(sql, params);
+	}
+	
+	/**
+	 * sql查询指定条数的map列表<br>
+	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)<br>
+	 * 如:数据字段为user_id或USER_ID, 都会被转换成userId
+	 * @param sql sql语句   参数用 ? (英文状态下)表示
+	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param params 查询的条数
+	 * @return (返回的list不可能为null,所以上层程序不用判断null)
+	 */
+	public List<Map<String, Serializable>> ListMapBysql(String sql, Object[] params, int count){
+		return globalDao.findListMapByCount(sql, params, count);
 	}
 	
 	/**
@@ -62,7 +75,7 @@ public class SqlService {
 	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
 	 */
 	public Map<String, Serializable> mapBySql(String sql, Object[] params) {
-		return globalDao.findMapCamelKeyBySql(sql, params);
+		return globalDao.findMapBySql(sql, params);
 	}
 	
 	/**
