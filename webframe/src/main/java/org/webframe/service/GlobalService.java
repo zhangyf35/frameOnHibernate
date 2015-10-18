@@ -14,7 +14,6 @@ import org.webframe.common.Pager;
  */
 @Service
 @Transactional
-@SuppressWarnings("unchecked")
 public class GlobalService extends SqlService{
 	
 	/**
@@ -75,7 +74,7 @@ public class GlobalService extends SqlService{
 	 * @return 任意对象，查询的什么返回什么
 	 */
 	public <T> T unique(String hql, Object[] params) {
-		return (T) globalDao.findUnique(hql, params);
+		return globalDao.findUnique(hql, params);
 	}
 	
 	/**
@@ -84,7 +83,7 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> findAll(Class<T> cla) {
-		return (List<T>) globalDao.findList("from " + cla.getSimpleName(), new Object[]{});
+		return globalDao.findList("from " + cla.getSimpleName(), null);
 	}
 	
 	/**
@@ -94,7 +93,7 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> list(String hql, Object[] params){
-		return (List<T>) globalDao.findList(hql, params);
+		return globalDao.findList(hql, params);
 	}
 	
 	/**
@@ -105,7 +104,7 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> listByCount(String hql, Object[] params, int count){
-		return (List<T>) globalDao.findPage(hql, params, 1, count);
+		return globalDao.findListByCount(hql, params, count);
 	}
 	
 	/**

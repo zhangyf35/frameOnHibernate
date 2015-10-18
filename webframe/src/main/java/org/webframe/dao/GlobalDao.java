@@ -113,6 +113,18 @@ public class GlobalDao extends SqlDao{
 	}
 	
 	/**
+	 * 查询符合条件的对象列表
+	 * @param hql hql语句   参数用 ? (英文状态下)表示
+	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param count 指定查询的条数
+	 * @return (返回的list不可能为null,所以上层程序不用判断null)
+	 */
+	public <T> List<T> findListByCount(String hql, Object[] params, int count) {
+		List<T> list = getQuery(hql, params).setFirstResult(0).setMaxResults(count).list();
+		return (List<T>) (list == null? BeansUtil.newArrayList():list);
+	}
+	
+	/**
 	 * 分页查询
 	 * @param hql hql语句   参数用 ? (英文状态下)表示
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!

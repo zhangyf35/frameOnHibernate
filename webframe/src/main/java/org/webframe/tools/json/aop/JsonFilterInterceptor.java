@@ -1,8 +1,6 @@
 package org.webframe.tools.json.aop;
 
 import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -10,12 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.webframe.tools.json.FilterAnnotationReader;
 import org.webframe.tools.json.JsonParser;
-import org.webframe.tools.json.HttpServiceContent;
-import org.webframe.tools.json.annotation.JsonFilterAuto;
-import org.webframe.tools.json.annotation.JsonFilterProperties;
-import org.webframe.tools.json.annotation.Jsonp;
+import org.webframe.tools.json.config.FilterAnnotationReader;
+import org.webframe.tools.json.context.HttpServiceContent;
 
 /**
  * aop-Controller<br>
@@ -37,8 +32,8 @@ public class JsonFilterInterceptor {
 	 */
     public Object jsonFilterAround(ProceedingJoinPoint pjp) throws Throwable{
     	//获取方法
-    	MethodSignature signature = (MethodSignature) pjp.getSignature();
-    	Method method = signature.getMethod();
+    	Method method = ((MethodSignature) pjp.getSignature()).getMethod();
+    	long x = System.currentTimeMillis();
     	//得到返回对象
     	Object object = pjp.proceed();//执行该方法  
     	//判断是否返回为json
@@ -46,41 +41,22 @@ public class JsonFilterInterceptor {
 	    	if(method.isAnnotationPresent(ResponseBody.class)) {
 	    		HttpServletRequest request = HttpServiceContent.getRequest();
 				HttpServletResponse response = HttpServiceContent.getResponse();
+				FilterAnnotationReader annotationReader = new FilterAnnotationReader(method);
+				JsonParser jsonParser = new JsonParser(object, annotationReader, request, response);
 				//如果返回的不是字符串
 	    		if (! object.getClass().getSimpleName().equals("String")) {
-	    			//如果是发送jsonp
-	    			if(method.isAnnotationPresent(Jsonp.class)) {
-	    				String callbackParam = request.getParameter(method.getAnnotation(Jsonp.class).callbackParamName());
-	    				//自定义过滤
-	    				if (method.isAnnotationPresent(JsonFilterProperties.class)) {
-	        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
-	        				JsonParser.outFilterJsonP(object, map, request, response, callbackParam);
-	        			}
-	    				//自动过滤
-	    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) {
-	        				JsonParser.outAutoFilterJsonP(object, request, response, callbackParam);
-	        			}
-	    			}
-	    			//如果是发送json
-	    			else {
-	    				// 定义过滤
-	    				if (method.isAnnotationPresent(JsonFilterProperties.class)) { 
-	        				Map<Class<?>, Set<String>> map = FilterAnnotationReader.getJsonFilters(method);
-	        				JsonParser.outFilterJsonString(object, map, request, response);;
-	        			}
-	    				//自动过滤
-	    				else if(method.isAnnotationPresent(JsonFilterAuto.class)) { 
-	        				JsonParser.outAutoFilterJsonString(object, request, response);
-	        			}
-	    			}
+	    			jsonParser.outJson();
 	    		} 
 	    		//如果返回的是字符串
 	    		else {
-	    			JsonParser.outString(String.valueOf(object), response);
+	    			jsonParser.outString(String.valueOf(object));
 	    		}
+	    		long y = System.currentTimeMillis();
+	    		System.out.println(y-x);
 	    		return null;
 	    	}
     	}
+    	
     	return object;
     }
     

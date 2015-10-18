@@ -146,4 +146,14 @@ public class StringUtil {
         }
 	}
 	
+	/**
+	 * 截掉下环线以及下划线以后的字符串
+	 * @param str
+	 * @return
+	 */
+	public static String subToUnderLine(String str) {
+		if(str.contains("_"))
+			return str.substring(0, str.indexOf("_"));
+		return str;
+	}
 }

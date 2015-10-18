@@ -61,7 +61,6 @@ public class SqlDao {
 		return work.getMaps();
 	}
 	
-	
 	/**
 	 * sql查询map列表<br>
 	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
