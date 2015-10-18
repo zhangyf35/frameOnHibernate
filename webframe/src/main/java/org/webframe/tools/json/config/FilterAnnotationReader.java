@@ -24,7 +24,7 @@ public class FilterAnnotationReader {
 	/**
 	 * 要显示的类
 	 */
-	Set<String> displayClass = null;
+	Class<?>[] displayClass = null;
 	
 	/**
 	 * 要解析的方法
@@ -68,10 +68,7 @@ public class FilterAnnotationReader {
 				}
 			}
 			if(classes != null && classes.length != 0) {
-				displayClass = BeansUtil.newHashSet();
-				for (Class<?> clazz : classes) {
-					displayClass.add(clazz.getName());
-				}
+				displayClass = classes;
 			}
 		}
 	}
@@ -80,7 +77,7 @@ public class FilterAnnotationReader {
 		return this.extraFilterFields;
 	}
 
-	public Set<String> getShowClass() {
+	public Class<?>[] getShowClass() {
 		return this.displayClass;
 	}
 	

@@ -10,7 +10,7 @@ import net.sf.json.util.PropertyFilter;
 
 public class JsonPropertyFilter implements PropertyFilter{
 	
-	Set<String> showClass = null;
+	Class<?>[] showClass = null;
 	
 	Map<Class<?>,Set<String>> extraFilterFields = null;
 	
@@ -46,9 +46,9 @@ public class JsonPropertyFilter implements PropertyFilter{
 	private Boolean showClassJudge(Boolean isFilter, Class<?> objectClass, String fieldName)
 			throws NoSuchFieldException, SecurityException {
 		if(showClass != null) {
-			for (String clazz : showClass) {
+			for (Class<?> clazz : showClass) {
 				String typeString = objectClass.getDeclaredField(fieldName).getGenericType().toString();
-				if(typeString.contains(clazz)){
+				if(typeString.contains(clazz.getName())){
 					return false;
 				}
 			}
