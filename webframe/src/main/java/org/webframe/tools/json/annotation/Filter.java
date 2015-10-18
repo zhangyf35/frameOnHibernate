@@ -18,11 +18,11 @@ public @interface Filter {
 	/**
 	 * 要过滤的类
 	 */
-	Class<?> clazz();
+	Class<?> clazz() default void.class;
 	
 	/**
 	 * 要过滤的类中的字段
 	 */
-	String[] fields();
+	String[] fields() default {};
 	
 }
