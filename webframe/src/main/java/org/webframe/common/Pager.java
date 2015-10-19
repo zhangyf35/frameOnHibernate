@@ -13,22 +13,22 @@ public class Pager<T> {
 	/**
 	 * 当前页
 	 */
-	private int page;
+	private Integer page;
 	
 	/**
 	 * 查询结果的总条数
 	 */
-	private long total;
+	private Long total;
 	
 	/**
 	 * 总页数
 	 */
-	private long pageCount;
+	private Long pageCount;
 	
 	/**
 	 * 每页条数
 	 */
-	private int size;
+	private Integer size;
 	
 	/**
 	 * 分页数据
@@ -47,7 +47,7 @@ public class Pager<T> {
 	 * 有参构造，默认每页10条
 	 * @param page 当前页
 	 */
-	public Pager(int page){
+	public Pager(Integer page){
 		setPage(page);
 		setSize(10);
 	}
@@ -57,7 +57,7 @@ public class Pager<T> {
 	 * @param page 当前页
 	 * @param size 每页条数
 	 */
-	public Pager(int page, int size) {
+	public Pager(Integer page, Integer size) {
 		setPage(page);
 		setSize(size);
 	}
@@ -66,7 +66,7 @@ public class Pager<T> {
 	 * 获取当前页
 	 * @return 当前页
 	 */
-	public int getPage() {
+	public Integer getPage() {
 		return page;
 	}
 
@@ -74,18 +74,23 @@ public class Pager<T> {
 	 * 设置当前页
 	 * @param page 当前页
 	 */
-	public void setPage(int page) {
-		if(page < 0){
-			this.page = 1;
+	public void setPage(Integer page) {
+		if(page != null) {
+			if(page < 0){
+				this.page = 1;
+				return;
+			}
+			this.page = page;
+			return;
 		}
-		this.page = page;
+		this.page = 1;
 	}
 	
 	/**
 	 * 获取查询结果总条数
 	 * @return 结果总条数
 	 */
-	public long getTotal() {
+	public Long getTotal() {
 		return total;
 	}
 
@@ -93,7 +98,7 @@ public class Pager<T> {
 	 * 设置查询结果总条数
 	 * @param total 总条数
 	 */
-	public void setTotal(long total) {
+	public void setTotal(Long total) {
 		this.total = total;
 		this.pageCount = (long) Math.ceil((double)total / size);
 	}
@@ -102,7 +107,7 @@ public class Pager<T> {
 	 * 获取总页数
 	 * @return 总页数
 	 */
-	public long getPageCount() {
+	public Long getPageCount() {
 		return pageCount;
 	}
 
@@ -110,7 +115,7 @@ public class Pager<T> {
 	 * 获取每页条数
 	 * @return 每页条数
 	 */
-	public int getSize() {
+	public Integer getSize() {
 		return size;
 	}
 
@@ -118,7 +123,7 @@ public class Pager<T> {
 	 * 设置每页条数，如果参数小于或等于0则设置为10条
 	 * @param size 每页条数
 	 */
-	public void setSize(int size) {
+	public void setSize(Integer size) {
 		if(size <= 0){
 			this.size = 10;
 			return;

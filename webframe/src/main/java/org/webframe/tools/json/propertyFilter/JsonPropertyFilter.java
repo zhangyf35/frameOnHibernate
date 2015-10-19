@@ -104,7 +104,7 @@ public class JsonPropertyFilter implements PropertyFilter{
 	 * Map中过滤不是懒加载的字段
 	 * @param isFilter
 	 * @param fieldName
-	 * @return
+	 * @return Boolean
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */

@@ -44,7 +44,6 @@ public class SqlService {
 	 * 如:数据字段为user_id或USER_ID, 都会被转换成userId
 	 * @param sql sql语句   参数用 ? (英文状态下)表示
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @param params 查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public List<Map<String, Serializable>> listMapByCountSql(String sql, Object[] params, int count){
