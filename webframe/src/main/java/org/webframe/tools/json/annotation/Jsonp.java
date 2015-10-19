@@ -7,16 +7,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 /**
- * 处理跨域请求默认毁掉函数参数名为callback
+ * 处理跨域请求默认回调函数参数名为callback
  * @author 张永葑
  */
 @Target(METHOD)
 @Retention(RUNTIME)
 public @interface Jsonp {
 	
-	/**
-	 * 回调函数的参数名
-	 * @return 传递回调函数的参数名
-	 */
+	/** 回调函数的参数名 */
 	String callbackParamName() default "callback";
 }

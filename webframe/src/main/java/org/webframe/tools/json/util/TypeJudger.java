@@ -3,6 +3,8 @@ package org.webframe.tools.json.util;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Map;
 
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -57,5 +59,18 @@ public class TypeJudger {
 		}
 		return false;
 	}
+	
+	/**
+	 * 是否是集合
+	 * @param object
+	 * @return
+	 */
+	public static Boolean isCollect(Object object) {
+		if(object instanceof Map || object instanceof Collection) {
+			return true;
+		}
+		return false;
+	}
+	
 	
 }

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 
 /**
- * 此注释在@JsonFilterProperties中注解
+ * 此注释在@JsonAutoFilterLazy中的extraFilterFields属性中注解
  * @author 张永葑
  *
  */
@@ -15,14 +15,10 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 public @interface Filter {
 	
-	/**
-	 * 要过滤的类
-	 */
+	/** 要加载的类 */
 	Class<?> clazz() default void.class;
 	
-	/**
-	 * 要过滤的类中的字段
-	 */
+	/** 要过滤的类中的字段 */
 	String[] fields() default {};
 	
 }

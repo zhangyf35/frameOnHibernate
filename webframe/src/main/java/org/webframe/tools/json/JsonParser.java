@@ -23,24 +23,16 @@ import net.sf.json.util.CycleDetectionStrategy;
  */
 public class JsonParser {
 	
-	/**
-	 * 待转换对象
-	 */
+	/** 待转换对象 */
 	private Object object;
 	
-	/**
-	 * 过滤注解读取对象
-	 */
+	/** 过滤注解读取对象 */
 	private FilterAnnotationReader annotationReader;
 	
-	/**
-	 * 请求对象
-	 */
+	/** 请求对象 */
 	private HttpServletRequest request;
 	
-	/**
-	 * 相应对象
-	 */
+	/** 相应对象 */
 	private HttpServletResponse response;
 	
 	/**

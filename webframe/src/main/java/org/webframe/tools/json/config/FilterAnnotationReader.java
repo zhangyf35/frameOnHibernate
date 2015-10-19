@@ -16,24 +16,16 @@ import org.webframe.tools.json.annotation.Jsonp;
  */
 public class FilterAnnotationReader {
 	
-	/**
-	 * 额外的过滤字段
-	 */
+	/** 额外的过滤字段 */
 	Map<Class<?>, Set<String>> extraFilterFields = null;
 	
-	/**
-	 * 要显示的类
-	 */
+	/** 要显示的类 */
 	Class<?>[] displayClass = null;
 	
-	/**
-	 * 要解析的方法
-	 */
+	/** 要解析的方法 */
 	Method method;
 	
-	/**
-	 * jsonp
-	 */
+	/** jsonp */
 	String[] jsonp = new String[]{"false",null};
 	
 	public FilterAnnotationReader(Method method) {
