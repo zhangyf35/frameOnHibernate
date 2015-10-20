@@ -5,9 +5,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 import org.hibernate.jdbc.Work;
+import org.webframe.common.QueryAssister;
 
 /**
  * hibernate jdbc work的实现类
@@ -29,16 +31,16 @@ public class MapWork implements Work{
 	/**
 	 * sql参数
 	 */
-	protected Object[] params = null;
+	protected List<Object> params = null;
 	
 	/**
 	 * 有参构造
 	 * @param sql sql语句
 	 * @param params sql参数
 	 */
-	public MapWork(String sql, Object[] params) {
-		this.sql = sql;
-		this.params = params;
+	public MapWork(QueryAssister queryAssister) {
+		this.sql = queryAssister.getResultQuery();
+		this.params = queryAssister.getParams();
 	}
 	
 	/**
@@ -59,10 +61,10 @@ public class MapWork implements Work{
 		return this.map;
 	}
 	
-	public void setParams(PreparedStatement ps, Object[] params) throws SQLException {
+	public void setParams(PreparedStatement ps, List<Object> params) throws SQLException {
 		if(params != null) {
-			for (int i = 0; i < params.length; i++) {
-				ps.setObject(i+1, params[i]);
+			for (int i = 0; i < params.size(); i++) {
+				ps.setObject(i+1, params.get(i));
 			}
 		}
 	}

@@ -11,6 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
 import org.webframe.common.Pager;
+import org.webframe.common.QueryAssister;
 import org.webframe.tools.collects.BeansUtil;
 import org.webframe.tools.reflect.MergeObject;
 
@@ -97,8 +98,8 @@ public class GlobalDao extends SqlDao{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 任意对象，查询的什么返回什么
 	 */
-	public <T> T findUnique(String hql, Object[] params) {
-		return (T) getQuery(hql, params).setFirstResult(0).setMaxResults(2).uniqueResult();
+	public <T> T findUnique(QueryAssister hqlQueryAssister) {
+		return (T) getQuery(hqlQueryAssister).setFirstResult(0).setMaxResults(2).uniqueResult();
 	}
 	
 	/**
@@ -107,8 +108,8 @@ public class GlobalDao extends SqlDao{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findList(String hql, Object[] params) {
-		List<T> list = getQuery(hql, params).list();
+	public <T> List<T> findList(QueryAssister hqlQueryAssister) {
+		List<T> list = getQuery(hqlQueryAssister).list();
 		return (List<T>) (list == null? BeansUtil.newArrayList():list);
 	}
 	
@@ -119,8 +120,8 @@ public class GlobalDao extends SqlDao{
 	 * @param count 指定查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findListByCount(String hql, Object[] params, int count) {
-		List<T> list = getQuery(hql, params).setFirstResult(0).setMaxResults(count).list();
+	public <T> List<T> findListByCount(QueryAssister hqlQueryAssister, int count) {
+		List<T> list = getQuery(hqlQueryAssister).setFirstResult(0).setMaxResults(count).list();
 		return (List<T>) (list == null? BeansUtil.newArrayList():list);
 	}
 	
@@ -128,13 +129,12 @@ public class GlobalDao extends SqlDao{
 	 * 分页查询
 	 * @param hql hql语句   参数用 ? (英文状态下)表示
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @param page 当前页
-	 * @param size 每页条数
+	 * @param pager 包含当前页和每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> findPage(String hql, Object[] params, Pager<T> pager) {
-		long total = getDataTotal(hql, params);
+	public <T> Pager<T> findPage(QueryAssister hqlQueryAssister, Pager<T> pager) {
+		long total = getDataTotal(hqlQueryAssister);
 		pager.setTotal(total);
 		if(pager.getPage() > pager.getPageCount()) {
 			pager.setPage(pager.getPageCount());
@@ -142,7 +142,7 @@ public class GlobalDao extends SqlDao{
 		if(total == 0){
 			return pager;
 		}
-		List<T> list = getQuery(hql, params).setFirstResult((pager.getPage()-1) * pager.getSize()).setMaxResults(pager.getSize()).list();
+		List<T> list = getQuery(hqlQueryAssister).setFirstResult((pager.getPage()-1) * pager.getSize()).setMaxResults(pager.getSize()).list();
 		pager.setRows((List<T>) (list == null? BeansUtil.newArrayList():list));
 		return pager;
 	}
@@ -153,18 +153,15 @@ public class GlobalDao extends SqlDao{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 总条数
 	 */
-	public Long getDataTotal(String hql, Object[] params) {
-		QueryTranslatorImpl queryTranslator = new QueryTranslatorImpl(hql, hql,Collections.EMPTY_MAP, (SessionFactoryImplementor) super.getSessionFactory()); 
+	public Long getDataTotal(QueryAssister hqlQueryAssister) {
+		String hql = hqlQueryAssister.getResultQuery();
+		QueryTranslatorImpl queryTranslator = new QueryTranslatorImpl(hql, hql, 
+				Collections.EMPTY_MAP, (SessionFactoryImplementor) super.getSessionFactory()); 
 		queryTranslator.compile(Collections.EMPTY_MAP, false); 
 		String tempSQL = queryTranslator.getSQLString(); 
-		String countSQL = "select count(*) from (" + tempSQL + ") tmp_count_t"; 
-		Query query = this.getSession().createSQLQuery(countSQL);
-		if(params != null) {
-			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i, params[i]);
-			}
-		}
-		BigInteger count = (BigInteger) query.uniqueResult(); 
+		String countSQL = "select count(*) from (" + tempSQL + ") tmp_count_t";
+		QueryAssister sqlQueryAssister = new QueryAssister(countSQL,hqlQueryAssister.getParams());
+		BigInteger count = (BigInteger) super.getSqlQuery(sqlQueryAssister).uniqueResult(); 
 		return count.longValue();
 	}
 	
@@ -174,12 +171,12 @@ public class GlobalDao extends SqlDao{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 获取Query对象
 	 */
-	private Query getQuery(String hql, Object[] params) {
+	private Query getQuery(QueryAssister hqlQueryAssister) {
+		String hql = hqlQueryAssister.getResultQuery();
+		List<Object> params = hqlQueryAssister.getParams();
 		Query query = getSession().createQuery(hql);
-		if(params != null) {
-			for (int i = 0; i < params.length; i++) {
-				query.setParameter(i, params[i]);
-			}
+		for (int i = 0; i < params.size(); i++) {
+			query.setParameter(i, params.get(i));
 		}
 		return query;
 	}

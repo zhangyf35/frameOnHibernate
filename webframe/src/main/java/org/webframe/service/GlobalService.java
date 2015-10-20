@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webframe.common.Pager;
+import org.webframe.common.QueryAssister;
 
 /**
  * 全局service，包含所有基本操作<br>
@@ -73,8 +74,8 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 任意对象，查询的什么返回什么
 	 */
-	public <T> T unique(String hql, Object[] params) {
-		return globalDao.findUnique(hql, params);
+	public <T> T unique(QueryAssister hqlQueryAssister) {
+		return globalDao.findUnique(hqlQueryAssister);
 	}
 	
 	/**
@@ -83,7 +84,9 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> findAll(Class<T> cla) {
-		return globalDao.findList("from " + cla.getSimpleName(), null);
+		QueryAssister queryAssister = new QueryAssister();
+		queryAssister.addQuery("from " + cla.getSimpleName());
+		return globalDao.findList(queryAssister);
 	}
 	
 	/**
@@ -92,8 +95,8 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> list(String hql, Object[] params){
-		return globalDao.findList(hql, params);
+	public <T> List<T> list(QueryAssister hqlQueryAssister){
+		return globalDao.findList(hqlQueryAssister);
 	}
 	
 	/**
@@ -103,8 +106,8 @@ public class GlobalService extends SqlService{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listByCount(String hql, Object[] params, int count){
-		return globalDao.findListByCount(hql, params, count);
+	public <T> List<T> listByCount(QueryAssister hqlQueryAssister, int count){
+		return globalDao.findListByCount(hqlQueryAssister, count);
 	}
 	
 	/**
@@ -116,8 +119,8 @@ public class GlobalService extends SqlService{
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> page(String hql, Object[] params, Pager<T> pager) {
-		return globalDao.findPage(hql, params, pager);
+	public <T> Pager<T> page(QueryAssister hqlQueryAssister, Pager<T> pager) {
+		return globalDao.findPage(hqlQueryAssister, pager);
 	}
 	
 }

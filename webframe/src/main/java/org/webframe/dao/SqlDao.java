@@ -8,6 +8,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.webframe.common.Pager;
+import org.webframe.common.QueryAssister;
 import org.webframe.mapping.ListMapWork;
 import org.webframe.mapping.MapWork;
 import org.webframe.tools.collects.BeansUtil;
@@ -55,8 +56,8 @@ public class SqlDao {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
 	 */
-	public Map<String, Serializable> findMapBySql(String sql, Object[] params) {
-		MapWork work = new MapWork(sql, params);
+	public Map<String, Serializable> findMapBySql(QueryAssister sqlQueryAssister) {
+		MapWork work = new MapWork(sqlQueryAssister);
 		getSession().doWork(work);
 		return work.getMaps();
 	}
@@ -68,8 +69,8 @@ public class SqlDao {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> findListMapBysql(String sql, Object[] params){
-		ListMapWork work = new ListMapWork(sql, params);
+	public List<Map<String, Serializable>> findListMapBysql(QueryAssister sqlQueryAssister){
+		ListMapWork work = new ListMapWork(sqlQueryAssister);
 		getSession().doWork(work);
 		return work.getMaps();
 	}
@@ -81,8 +82,8 @@ public class SqlDao {
 	 * @param count 查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> findListMapByCount(String sql, Object[] params, int count) {
-		return findListMapLimit(sql, params, 1, count);
+	public List<Map<String, Serializable>> findListMapByCount(QueryAssister sqlQueryAssister, int count) {
+		return findListMapLimit(sqlQueryAssister, 1, count);
 	}
 	
 	/**
@@ -93,9 +94,9 @@ public class SqlDao {
 	 * @param size 当前条数
 	 * @return List<Map<String, Serializable>>
 	 */
-	protected List<Map<String, Serializable>> findListMapLimit(String sql, Object[] params, int page, int size) {
-		sql += " limit "+(page-1)*size + ","+ size;
-		ListMapWork work = new ListMapWork(sql, params);
+	protected List<Map<String, Serializable>> findListMapLimit(QueryAssister sqlQueryAssister, int page, int size) {
+		sqlQueryAssister.addQuery(" limit "+(page-1)*size+","+size);
+		ListMapWork work = new ListMapWork(sqlQueryAssister);
 		getSession().doWork(work);
 		return work.getMaps();
 	}
@@ -104,13 +105,14 @@ public class SqlDao {
 	 * sql分页查询
 	 * @param sql sql语句   参数用 ? (英文状态下)表示
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
-	 * @param page 当前页
-	 * @param size 每页条数
+	 * @param pager 包含当前页和每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据
 	 */
-	public Pager<Map<String,Serializable>> findPageBySql(String sql, Object[] params, Pager<Map<String,Serializable>> pager) {
-		String newSql = "select count(*) as count from ("+sql+") as newTable";
-		long total = Long.parseLong(String.valueOf(findMapBySql(newSql, null).get("count"))) ;
+	public Pager<Map<String,Serializable>> findPageBySql(QueryAssister sqlQueryAssister, Pager<Map<String,Serializable>> pager) {
+		String newSql = "select count(*) as count from ("+sqlQueryAssister.getResultQuery()+") as newTable";
+		sqlQueryAssister.clearQuery();
+		sqlQueryAssister.addQuery(newSql);
+		long total = Long.parseLong(String.valueOf(findMapBySql(sqlQueryAssister).get("count"))) ;
 		pager.setTotal(total);
 		if(pager.getPage() > pager.getPageCount()) {
 			pager.setPage(pager.getPageCount());
@@ -118,7 +120,7 @@ public class SqlDao {
 		if(total == 0){
 			return pager;
 		}
-		pager.setRows(findListMapLimit(sql, params, pager.getPage(), pager.getSize()));
+		pager.setRows(findListMapLimit(sqlQueryAssister, pager.getPage(), pager.getSize()));
 		return pager;
 	}
 	
@@ -129,8 +131,8 @@ public class SqlDao {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findListBySql(Class<T> cla, String sql, Object[] params) {
-		List<T> list = getSqlQuery(sql, params).addEntity(cla).list();
+	public <T> List<T> findListBySql(Class<T> cla, QueryAssister sqlQueryAssister) {
+		List<T> list = getSqlQuery(sqlQueryAssister).addEntity(cla).list();
 		return (List<T>) (list == null? BeansUtil.newArrayList():list);
 	}
 	
@@ -141,8 +143,8 @@ public class SqlDao {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return entity的对象
 	 */
-	public <T> T findUniqueObjectBySql(Class<T> cla, String sql, Object[] params) {
-		return (T) getSqlQuery(sql, params).addEntity(cla).uniqueResult();
+	public <T> T findUniqueObjectBySql(Class<T> cla, QueryAssister sqlQueryAssister) {
+		return (T) getSqlQuery(sqlQueryAssister).addEntity(cla).uniqueResult();
 	} 
 	
 	/**
@@ -151,11 +153,13 @@ public class SqlDao {
 	 * @param params
 	 * @return SQLQuery
 	 */
-	private SQLQuery getSqlQuery(String sql,Object[] params) {
-		SQLQuery sqlQuery = getSession().createSQLQuery(sql);
+	protected SQLQuery getSqlQuery(QueryAssister sqlQueryAssister) {
+		String sql = sqlQueryAssister.getResultQuery();
+		List<Object> params = sqlQueryAssister.getParams();
+ 		SQLQuery sqlQuery = getSession().createSQLQuery(sql);
 		if(params != null) {
-			for (int i = 0; i < params.length; i++) {
-				sqlQuery.setParameter(i, params[i]);
+			for (int i = 0; i < params.size(); i++) {
+				sqlQuery.setParameter(i, params.get(i));
 			}
 		}
 		return sqlQuery;

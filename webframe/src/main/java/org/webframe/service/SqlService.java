@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webframe.common.Pager;
+import org.webframe.common.QueryAssister;
 import org.webframe.dao.GlobalDao;
 
 /**
@@ -34,8 +35,8 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> listMapBySql(String sql, Object[] params){
-		return globalDao.findListMapBysql(sql, params);
+	public List<Map<String, Serializable>> listMapBySql(QueryAssister sqlQueryAssister){
+		return globalDao.findListMapBysql(sqlQueryAssister);
 	}
 	
 	/**
@@ -46,8 +47,8 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> listMapByCountSql(String sql, Object[] params, int count){
-		return globalDao.findListMapByCount(sql, params, count);
+	public List<Map<String, Serializable>> listMapByCountSql(QueryAssister sqlQueryAssister, int count){
+		return globalDao.findListMapByCount(sqlQueryAssister, count);
 	}
 	
 	/**
@@ -61,8 +62,8 @@ public class SqlService {
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public Pager<Map<String,Serializable>> pageBySql(String sql, Object[] params, Pager<Map<String,Serializable>> pager) {
-		return globalDao.findPageBySql(sql, params, pager);
+	public Pager<Map<String,Serializable>> pageBySql(QueryAssister sqlQueryAssister, Pager<Map<String,Serializable>> pager) {
+		return globalDao.findPageBySql(sqlQueryAssister, pager);
 	}
 	
 	/**
@@ -73,8 +74,8 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
 	 */
-	public Map<String, Serializable> uniqueMapBySql(String sql, Object[] params) {
-		return globalDao.findMapBySql(sql, params);
+	public Map<String, Serializable> uniqueMapBySql(QueryAssister sqlQueryAssister) {
+		return globalDao.findMapBySql(sqlQueryAssister);
 	}
 	
 	/**
@@ -84,8 +85,8 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listBysql(Class<T> cla, String sql, Object[] params) {
-		return globalDao.findListBySql(cla, sql, params);
+	public <T> List<T> listBysql(Class<T> cla, QueryAssister sqlQueryAssister) {
+		return globalDao.findListBySql(cla, sqlQueryAssister);
 	}
 	
 	/**
@@ -95,7 +96,7 @@ public class SqlService {
 	 * @param params sql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 唯一的entity对象
 	 */
-	public <T> T uniqueObjectBysql(Class<T> cla, String sql, Object[] params) {
-		return globalDao.findUniqueObjectBySql(cla, sql, params);
+	public <T> T uniqueObjectBysql(Class<T> cla, QueryAssister sqlQueryAssister) {
+		return globalDao.findUniqueObjectBySql(cla, sqlQueryAssister);
 	}
 }

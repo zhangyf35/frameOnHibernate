@@ -112,9 +112,18 @@ public class JsonParser {
 	 * @param response 响应
 	 */
 	public void outString(String resultJsonString) {
+		outString(resultJsonString, response);
+	}
+	
+	/**
+	 * 输出字符串
+	 * @param str
+	 * @param response
+	 */
+	public static void outString(String str, HttpServletResponse response) {
 		try {
 			PrintWriter out = response.getWriter();
-	        out.write(resultJsonString);//返回jsonp格式数据  
+	        out.write(str);//返回jsonp格式数据  
 	        out.flush();
 	        out.close();
 		} catch (IOException e) {

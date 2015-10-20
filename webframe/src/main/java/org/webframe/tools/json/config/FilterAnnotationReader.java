@@ -45,7 +45,7 @@ public class FilterAnnotationReader {
 			this.jsonp[1] = jsonp.callbackParamName();
 		}
 		//如果注解了JsonAutoFilterLazy
-		if(method.isAnnotationPresent(JsonAutoFilterLazy.class)) {
+		if(hasJsonAutoFilterLazy()) {
 			JsonAutoFilterLazy autoFilterLazy = method.getAnnotation(JsonAutoFilterLazy.class);
 			Filter[] filters = autoFilterLazy.extraFilterFields();
 			Class<?>[] classes = autoFilterLazy.showLazyClass();

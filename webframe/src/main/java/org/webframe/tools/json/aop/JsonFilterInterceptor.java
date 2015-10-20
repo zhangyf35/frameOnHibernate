@@ -16,7 +16,6 @@ import org.webframe.tools.json.context.HttpServiceContent;
  * aop-Controller<br>
  * 切入所有controller，当controller需要json转换，自动提供转换<br>
  * 请在spring-config.xml中配置该核心aop，通知类型为around<br>
- * 如果@JsonFilterProperties和@JsonFilterAuto都注解了，默认会按照@JsonFilterProperties过滤
  * @author 张永葑
  *
  */
@@ -33,7 +32,6 @@ public class JsonFilterInterceptor {
     public Object jsonFilterAround(ProceedingJoinPoint pjp) throws Throwable{
     	//获取方法
     	Method method = ((MethodSignature) pjp.getSignature()).getMethod();
-    	long x = System.currentTimeMillis();
     	//得到返回对象
     	Object object = pjp.proceed();//执行该方法  
     	//判断是否返回为json
@@ -41,18 +39,19 @@ public class JsonFilterInterceptor {
 	    	if(method.isAnnotationPresent(ResponseBody.class)) {
 	    		HttpServletRequest request = HttpServiceContent.getRequest();
 				HttpServletResponse response = HttpServiceContent.getResponse();
-				FilterAnnotationReader annotationReader = new FilterAnnotationReader(method);
-				JsonParser jsonParser = new JsonParser(object, annotationReader, request, response);
-				//如果返回的不是字符串
-	    		if (! object.getClass().getSimpleName().equals("String")) {
-	    			jsonParser.outJson();
-	    		} 
-	    		//如果返回的是字符串
+				long x = System.currentTimeMillis();
+				//如果返回的是字符串
+	    		if (object.getClass().getSimpleName().equals("String")) {
+	    			JsonParser.outString(String.valueOf(object), response);
+	    		}
+	    		//如果返回的不是字符串
 	    		else {
-	    			jsonParser.outString(String.valueOf(object));
+	    			FilterAnnotationReader annotationReader = new FilterAnnotationReader(method);
+					JsonParser jsonParser = new JsonParser(object, annotationReader, request, response);
+	    			jsonParser.outJson();
 	    		}
 	    		long y = System.currentTimeMillis();
-	    		System.out.println(y-x);
+	    		System.out.println("json转换时间:"+(y-x)+"毫秒");
 	    		return null;
 	    	}
     	}
