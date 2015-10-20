@@ -61,8 +61,8 @@ public class SqlService {
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public Pager<Map<String,Serializable>> pageBySql(String sql, Object[] params, int page, int size) {
-		return globalDao.findPageBySql(sql, params, page, size);
+	public Pager<Map<String,Serializable>> pageBySql(String sql, Object[] params, Pager<Map<String,Serializable>> pager) {
+		return globalDao.findPageBySql(sql, params, pager);
 	}
 	
 	/**

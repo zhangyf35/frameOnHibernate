@@ -133,14 +133,16 @@ public class GlobalDao extends SqlDao{
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> findPage(String hql, Object[] params, int page, int size) {
-		Pager<T> pager = new Pager<T>(page, size);
+	public <T> Pager<T> findPage(String hql, Object[] params, Pager<T> pager) {
 		long total = getDataTotal(hql, params);
 		pager.setTotal(total);
+		if(pager.getPage() > pager.getPageCount()) {
+			pager.setPage(pager.getPageCount());
+		}
 		if(total == 0){
 			return pager;
 		}
-		List<T> list = getQuery(hql, params).setFirstResult((page-1)*size).setMaxResults(size).list();
+		List<T> list = getQuery(hql, params).setFirstResult((pager.getPage()-1) * pager.getSize()).setMaxResults(pager.getSize()).list();
 		pager.setRows((List<T>) (list == null? BeansUtil.newArrayList():list));
 		return pager;
 	}
@@ -151,14 +153,14 @@ public class GlobalDao extends SqlDao{
 	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return 总条数
 	 */
-	public Long getDataTotal(String hql, Object[] params) { 
+	public Long getDataTotal(String hql, Object[] params) {
 		QueryTranslatorImpl queryTranslator = new QueryTranslatorImpl(hql, hql,Collections.EMPTY_MAP, (SessionFactoryImplementor) super.getSessionFactory()); 
 		queryTranslator.compile(Collections.EMPTY_MAP, false); 
 		String tempSQL = queryTranslator.getSQLString(); 
 		String countSQL = "select count(*) from (" + tempSQL + ") tmp_count_t"; 
 		Query query = this.getSession().createSQLQuery(countSQL);
 		if(params != null) {
-			for (int i = 0; i < params.length; i++) { 
+			for (int i = 0; i < params.length; i++) {
 				query.setParameter(i, params[i]);
 			}
 		}

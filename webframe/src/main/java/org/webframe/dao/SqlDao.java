@@ -108,15 +108,17 @@ public class SqlDao {
 	 * @param size 每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据
 	 */
-	public Pager<Map<String,Serializable>> findPageBySql(String sql, Object[] params, int page, int size) {
-		Pager<Map<String,Serializable>> pager = new Pager<Map<String,Serializable>>(page, size);
+	public Pager<Map<String,Serializable>> findPageBySql(String sql, Object[] params, Pager<Map<String,Serializable>> pager) {
 		String newSql = "select count(*) as count from ("+sql+") as newTable";
 		long total = Long.parseLong(String.valueOf(findMapBySql(newSql, null).get("count"))) ;
 		pager.setTotal(total);
+		if(pager.getPage() > pager.getPageCount()) {
+			pager.setPage(pager.getPageCount());
+		}
 		if(total == 0){
 			return pager;
 		}
-		pager.setRows(findListMapLimit(sql, params, page, size));
+		pager.setRows(findListMapLimit(sql, params, pager.getPage(), pager.getSize()));
 		return pager;
 	}
 	

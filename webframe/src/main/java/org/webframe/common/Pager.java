@@ -23,7 +23,7 @@ public class Pager<T> {
 	/**
 	 * 总页数
 	 */
-	private Long pageCount;
+	private Integer pageCount;
 	
 	/**
 	 * 每页条数
@@ -75,15 +75,11 @@ public class Pager<T> {
 	 * @param page 当前页
 	 */
 	public void setPage(Integer page) {
-		if(page != null) {
-			if(page < 0){
-				this.page = 1;
-				return;
-			}
-			this.page = page;
-			return;
+		if(page == null || page <= 0) {
+			this.page = 1;
+			return ;
 		}
-		this.page = 1;
+		this.page = page;
 	}
 	
 	/**
@@ -100,14 +96,14 @@ public class Pager<T> {
 	 */
 	public void setTotal(Long total) {
 		this.total = total;
-		this.pageCount = (long) Math.ceil((double)total / size);
+		this.pageCount = (int) Math.ceil((double)total / size);
 	}
 	
 	/**
 	 * 获取总页数
 	 * @return 总页数
 	 */
-	public Long getPageCount() {
+	public Integer getPageCount() {
 		return pageCount;
 	}
 

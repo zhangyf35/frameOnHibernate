@@ -14,6 +14,15 @@ import org.webframe.tools.systemUtil.StringUtil;
  */
 public class EntityBuilder {
 	
+	public static void main(String[] args) {
+		try {
+			produceEntity("src/main/java/org/webframe/gen.txt");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * 转换方法
 	 * @param filePath 你定义的文件路径，该文件中包含了表信息
