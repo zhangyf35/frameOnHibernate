@@ -9,7 +9,7 @@ import org.webframe.tools.collects.BeansUtil;
  * @author 张永葑
  *
  */
-public class QueryAssister {
+public class QuerySir {
 	
 	/** 语句 */
 	private StringBuilder stringBuilder = BeansUtil.newStringBuilder();
@@ -17,24 +17,19 @@ public class QueryAssister {
 	/** 参数 */
 	private List<Object> params = BeansUtil.newArrayList();
 	
-	public QueryAssister() {}
+	public QuerySir() {}
 	
-	public QueryAssister(String query, Object... params) {
+	public QuerySir(String query, Object... params) {
 		addQuery(query);
 		setParams1(params);
-	}
-	
-	public QueryAssister(String query, List<Object> params) {
-		addQuery(query);
-		this.params = params;
 	}
 
 	/**
 	 * 追加语句
 	 * @param string
-	 * @return QueryAssister
+	 * @return QuerySir
 	 */
-	public QueryAssister addQuery(String query) {
+	public QuerySir addQuery(String query) {
 		stringBuilder.append(query).append(" ");
 		return this;
 	}
@@ -42,17 +37,17 @@ public class QueryAssister {
 	/**
 	 * 添加参数
 	 * @param params
-	 * @return QueryAssister
+	 * @return QuerySir
 	 */
-	public QueryAssister setParams(Object... params) {
-		setParams1(params);
-		return this;
+	public QuerySir setParams(Object... params) {
+		return setParams1(params);
 	}
 	
-	private void setParams1(Object[] params) {
+	public QuerySir setParams1(Object[] params) {
 		for (Object object : params) {
 			this.params.add(object);
 		}
+		return this;
 	}
 	
 	/**
@@ -73,27 +68,27 @@ public class QueryAssister {
 	
 	/**
 	 * 清除现有语句
-	 * @return QueryAssister
+	 * @return QuerySir
 	 */
-	public QueryAssister clearQuery() {
+	public QuerySir clearQuery() {
 		stringBuilder.delete(0, stringBuilder.length());
 		return this;
 	}
 	
 	/**
 	 * 清除现有参数
-	 * @return QueryAssister
+	 * @return QuerySir
 	 */
-	public QueryAssister clearParams() {
+	public QuerySir clearParams() {
 		params.clear();
 		return this;
 	}
 	
 	/**
 	 * 清除现有语句和参数
-	 * @return QueryAssister
+	 * @return QuerySir
 	 */
-	public QueryAssister clearAll() {
+	public QuerySir clearAll() {
 		clearQuery();
 		clearParams();
 		return this;

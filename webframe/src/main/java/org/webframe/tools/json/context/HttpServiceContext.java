@@ -9,11 +9,11 @@ import javax.servlet.http.HttpSession;
  * @author 张永葑
  *
  */
-public class HttpServiceContent {   
+public class HttpServiceContext {
 	
     private static ThreadLocal<HttpServletRequest> requestLocal= new ThreadLocal<HttpServletRequest>();   
     private static ThreadLocal<HttpServletResponse> responseLocal= new ThreadLocal<HttpServletResponse>();   
-        
+    
     public static HttpServletRequest getRequest() {   
         return (HttpServletRequest)requestLocal.get();   
     }

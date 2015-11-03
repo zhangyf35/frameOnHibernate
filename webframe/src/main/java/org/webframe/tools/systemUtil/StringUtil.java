@@ -22,16 +22,8 @@ public class StringUtil {
 	 * @param length
 	 * @return 指定位数的字符串
 	 */
-	public static String randomString(int length) {
-		String string = "";
-		if(length <= 32) {
-			string = randomUUID();
-		} else if(length <= 64) {
-			string = randomUUID()+randomUUID();
-		} else if(length <= 128) {
-			string = randomUUID()+randomUUID()+randomUUID()+randomUUID();
-		}
-		return string.substring(string.length()-length);
+	public static String randomString128() {
+		return randomUUID()+randomUUID()+randomUUID()+randomUUID();
 	}
 	
 	/**
@@ -146,14 +138,4 @@ public class StringUtil {
         }
 	}
 	
-	/**
-	 * 截掉下环线以及下划线以后的字符串
-	 * @param str
-	 * @return
-	 */
-	public static String subToUnderLine(String str) {
-		if(str.contains("_"))
-			return str.substring(0, str.indexOf("_"));
-		return str;
-	}
 }

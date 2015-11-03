@@ -33,7 +33,9 @@ public class JsonPropertyFilter implements PropertyFilter{
 		Boolean isFilter = false;
 		Class<?> objectClass = object.getClass();
 		try {
-			if(!TypeJudger.isCollect(object)) {
+			if(TypeJudger.isMap(object)) {
+				isFilter = extraFilterFieldsJudgeForMap(isFilter, fieldName);
+			} else {
 				if(objectClass.getName().contains("_$")) {
 					String classToString = objectClass.toString();
 					String classString = classToString.substring(6,classToString.indexOf("_$"));
@@ -44,10 +46,6 @@ public class JsonPropertyFilter implements PropertyFilter{
 					isFilter = showClassJudge(isFilter, objectClass, fieldName);
 				}
 				isFilter = extraFilterFieldsJudge(isFilter, objectClass, fieldName);
-			} else {
-				if(object instanceof Map) {
-					isFilter = extraFilterFieldsJudgeForMap(isFilter, fieldName);
-				}
 			}
 		} catch (ClassNotFoundException e) {
 			//e.printStackTrace();

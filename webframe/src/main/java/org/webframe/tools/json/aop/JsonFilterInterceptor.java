@@ -10,7 +10,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.webframe.tools.json.JsonParser;
 import org.webframe.tools.json.config.FilterAnnotationReader;
-import org.webframe.tools.json.context.HttpServiceContent;
+import org.webframe.tools.json.context.HttpServiceContext;
 
 /**
  * aop-Controller<br>
@@ -33,12 +33,12 @@ public class JsonFilterInterceptor {
     	//获取方法
     	Method method = ((MethodSignature) pjp.getSignature()).getMethod();
     	//得到返回对象
-    	Object object = pjp.proceed();//执行该方法  
+    	Object object = pjp.proceed();
     	//判断是否返回为json
     	if(object != null) {
 	    	if(method.isAnnotationPresent(ResponseBody.class)) {
-	    		HttpServletRequest request = HttpServiceContent.getRequest();
-				HttpServletResponse response = HttpServiceContent.getResponse();
+	    		HttpServletRequest request = HttpServiceContext.getRequest();
+				HttpServletResponse response = HttpServiceContext.getResponse();
 				long x = System.currentTimeMillis();
 				//如果返回的是字符串
 	    		if (object.getClass().getSimpleName().equals("String")) {
@@ -55,7 +55,6 @@ public class JsonFilterInterceptor {
 	    		return null;
 	    	}
     	}
-    	
     	return object;
     }
     

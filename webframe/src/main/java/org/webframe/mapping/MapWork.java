@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.jdbc.Work;
-import org.webframe.common.QueryAssister;
+import org.webframe.common.QuerySir;
 
 /**
  * hibernate jdbc work的实现类
@@ -38,9 +38,9 @@ public class MapWork implements Work{
 	 * @param sql sql语句
 	 * @param params sql参数
 	 */
-	public MapWork(QueryAssister queryAssister) {
-		this.sql = queryAssister.getResultQuery();
-		this.params = queryAssister.getParams();
+	public MapWork(QuerySir sqlQuerySir) {
+		this.sql = sqlQuerySir.getResultQuery();
+		this.params = sqlQuerySir.getParams();
 	}
 	
 	/**

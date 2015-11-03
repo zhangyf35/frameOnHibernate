@@ -11,8 +11,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
 import org.webframe.common.Pager;
-import org.webframe.common.QueryAssister;
-import org.webframe.tools.collects.BeansUtil;
+import org.webframe.common.QuerySir;
 import org.webframe.tools.reflect.MergeObject;
 
 /**
@@ -94,86 +93,77 @@ public class GlobalDao extends SqlDao{
 	/**
 	 * 根据条件查询唯一结果（可以是查询的唯一对象，也可以是查询的唯一其他结果，如：总条数）
 	 * 注意:如果返回不是entity的类型请使用Serializable接收返回值，让兼容性更好
-	 * @param hql hql语句   参数用?(英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return 任意对象，查询的什么返回什么
 	 */
-	public <T> T findUnique(QueryAssister hqlQueryAssister) {
-		return (T) getQuery(hqlQueryAssister).setFirstResult(0).setMaxResults(2).uniqueResult();
+	public <T> T findUnique(QuerySir hqlQuerySir) {
+		return (T) getQuery(hqlQuerySir).setFirstResult(0).setMaxResults(2).uniqueResult();
 	}
 	
 	/**
 	 * 查询符合条件的对象列表
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findList(QueryAssister hqlQueryAssister) {
-		List<T> list = getQuery(hqlQueryAssister).list();
-		return (List<T>) (list == null? BeansUtil.newArrayList():list);
+	public <T> List<T> findList(QuerySir hqlQuerySir) {
+		return getQuery(hqlQuerySir).list();
 	}
 	
 	/**
 	 * 查询符合条件的对象列表
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @param count 指定查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findListByCount(QueryAssister hqlQueryAssister, int count) {
-		List<T> list = getQuery(hqlQueryAssister).setFirstResult(0).setMaxResults(count).list();
-		return (List<T>) (list == null? BeansUtil.newArrayList():list);
+	public <T> List<T> findListByCount(QuerySir hqlQuerySir, int count) {
+		return getQuery(hqlQuerySir).setFirstResult(0).setMaxResults(count).list();
 	}
 	
 	/**
-	 * 分页查询
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * 分页数据注入
+	 * @param hqlQuerySir 查询辅助类
 	 * @param pager 包含当前页和每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> findPage(QueryAssister hqlQueryAssister, Pager<T> pager) {
-		long total = getDataTotal(hqlQueryAssister);
+	public <T> void pageInjection(QuerySir hqlQuerySir, Pager<T> pager) {
+		long total = getDataTotal(hqlQuerySir);
 		pager.setTotal(total);
-		if(pager.getPage() > pager.getPageCount()) {
+		if(pager.getPage() > pager.getPageCount())
 			pager.setPage(pager.getPageCount());
-		}
-		if(total == 0){
-			return pager;
-		}
-		List<T> list = getQuery(hqlQueryAssister).setFirstResult((pager.getPage()-1) * pager.getSize()).setMaxResults(pager.getSize()).list();
-		pager.setRows((List<T>) (list == null? BeansUtil.newArrayList():list));
-		return pager;
+		if(total == 0)
+			return;
+		List<T> list = getQuery(hqlQuerySir)
+				.setFirstResult((pager.getPage()-1) * pager.getSize())
+				.setMaxResults(pager.getSize()).list();
+		pager.setRows(list);
 	}
 	
 	/**
 	 * 查询分页查询条数
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return 总条数
 	 */
-	public Long getDataTotal(QueryAssister hqlQueryAssister) {
-		String hql = hqlQueryAssister.getResultQuery();
+	public Long getDataTotal(QuerySir hqlQuerySir) {
+		String hql = hqlQuerySir.getResultQuery();
 		QueryTranslatorImpl queryTranslator = new QueryTranslatorImpl(hql, hql, 
 				Collections.EMPTY_MAP, (SessionFactoryImplementor) super.getSessionFactory()); 
 		queryTranslator.compile(Collections.EMPTY_MAP, false); 
 		String tempSQL = queryTranslator.getSQLString(); 
 		String countSQL = "select count(*) from (" + tempSQL + ") tmp_count_t";
-		QueryAssister sqlQueryAssister = new QueryAssister(countSQL,hqlQueryAssister.getParams());
-		BigInteger count = (BigInteger) super.getSqlQuery(sqlQueryAssister).uniqueResult(); 
+		QuerySir sqlQuerySir = new QuerySir(countSQL,hqlQuerySir.getParams());
+		BigInteger count = (BigInteger) super.getSqlQuery(sqlQuerySir).uniqueResult(); 
 		return count.longValue();
 	}
 	
 	/**
 	 * 获取Query对象并设置hql参数，此方法不开放
-	 * @param hql hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return 获取Query对象
 	 */
-	private Query getQuery(QueryAssister hqlQueryAssister) {
-		String hql = hqlQueryAssister.getResultQuery();
-		List<Object> params = hqlQueryAssister.getParams();
+	private Query getQuery(QuerySir hqlQuerySir) {
+		String hql = hqlQuerySir.getResultQuery();
+		List<Object> params = hqlQuerySir.getParams();
 		Query query = getSession().createQuery(hql);
 		for (int i = 0; i < params.size(); i++) {
 			query.setParameter(i, params.get(i));

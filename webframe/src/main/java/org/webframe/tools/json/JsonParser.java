@@ -58,7 +58,7 @@ public class JsonParser {
 		if(annotationReader.hasJsonAutoFilterLazy()) {
 			config.setJsonPropertyFilter(new JsonPropertyFilter(annotationReader));
 		}
-		outjsonString(config);
+		writeJson(config);
 	}
 	
 	/**
@@ -74,7 +74,7 @@ public class JsonParser {
 	 * json
 	 * @param propertyFilter
 	 */
-	private void outjsonString(JsonConfig config) {
+	private void writeJson(JsonConfig config) {
 		String resultJsonString = getJsonString(config);
 		if(annotationReader.isJsonp()) {
 			String jsonpCallback = request.getParameter(annotationReader.getJsonpCallback());

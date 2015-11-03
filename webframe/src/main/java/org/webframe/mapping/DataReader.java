@@ -24,21 +24,23 @@ public class DataReader {
 	 * @return 将rs转换后的List<Map<String, Serializable>>
 	 * @throws SQLException
 	 */
-	public List<Map<String, Serializable>> getMaps(ResultSet rs) throws SQLException {
-		List<Map<String, Serializable>> list = BeansUtil.newArrayList();
-		ResultSetMetaData data = rs.getMetaData();
-		while(rs.next()){
-			Map<String, Serializable> map = BeansUtil.newHashMap();
-			for (int j = 1; j <= data.getColumnCount(); j++) {
-				String columnName = StringUtil.toCamel(data.getColumnLabel(j));
-				map.put(columnName, (Serializable)rs.getObject(data.getColumnLabel(j)));
+	public List<Map<String, Serializable>> getMaps(ResultSet rs) {
+		try {
+			List<Map<String, Serializable>> list = BeansUtil.newArrayList();
+			ResultSetMetaData data = rs.getMetaData();
+			while(rs.next()){
+				Map<String, Serializable> map = BeansUtil.newHashMap();
+				for (int j = 1; j <= data.getColumnCount(); j++) {
+					String columnName = StringUtil.toCamel(data.getColumnLabel(j));
+					map.put(columnName, (Serializable)rs.getObject(data.getColumnLabel(j)));
+				}
+				list.add(map);
 			}
-			list.add(map);
-		}
-		if(list.size()>0){
 			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
-		return null;
 	}
 	
 	/**
@@ -47,20 +49,26 @@ public class DataReader {
 	 * @return 将rs转换后的Map<String, Serializable>
 	 * @throws SQLException
 	 */
-	public Map<String, Serializable> getMap(ResultSet rs) throws SQLException {
-		Map<String, Serializable> map = BeansUtil.newHashMap();
-		ResultSetMetaData data = rs.getMetaData();
-		int count = 1;
-		while(rs.next()){
-			if(count > 1) {
-				throw new NotUniqueException("query did not return a unique result");
+	public Map<String, Serializable> getMap(ResultSet rs) {
+		try {
+			Map<String, Serializable> map = BeansUtil.newHashMap();
+			ResultSetMetaData data = rs.getMetaData();
+			int count = 1;
+			while(rs.next()){
+				if(count > 1) {
+					throw new NotUniqueException("query did not return a unique result");
+				}
+				for (int j = 1; j <= data.getColumnCount(); j++) {
+					String columnName = StringUtil.toCamel(data.getColumnLabel(j));
+					map.put(columnName, (Serializable)rs.getObject(data.getColumnLabel(j)));
+				}
+				count ++;
 			}
-			for (int j = 1; j <= data.getColumnCount(); j++) {
-				String columnName = StringUtil.toCamel(data.getColumnLabel(j));
-				map.put(columnName, (Serializable)rs.getObject(data.getColumnLabel(j)));
-			}
-			count ++;
+			return map;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return null;
 		}
-		return map;
+		
 	}
 }

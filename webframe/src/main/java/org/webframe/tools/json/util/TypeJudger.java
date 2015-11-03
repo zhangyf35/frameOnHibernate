@@ -66,11 +66,21 @@ public class TypeJudger {
 	 * @return
 	 */
 	public static Boolean isCollect(Object object) {
-		if(object instanceof Map || object instanceof Collection) {
+		if(isMap(object) || object instanceof Collection) {
 			return true;
 		}
 		return false;
 	}
 	
+	/**
+	 * 判断是否是map
+	 * @param object
+	 * @return
+	 */
+	public static Boolean isMap(Object object) {
+		if(object instanceof Map)
+			return true;
+		return false;
+	}
 	
 }

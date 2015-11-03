@@ -15,12 +15,12 @@ import javax.servlet.http.HttpServletResponse;
  * @author 张永葑
  *
  */
-public class ServletContentSupportFilter implements Filter {   
+public class ServletContextSupportFilter implements Filter {   
 	
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
     		throws IOException, ServletException {
-        HttpServiceContent.setRequest((HttpServletRequest) request);   
-        HttpServiceContent.setResponse((HttpServletResponse) response);   
+        HttpServiceContext.setRequest((HttpServletRequest) request);   
+        HttpServiceContext.setResponse((HttpServletResponse) response);   
         chain.doFilter(request, response);
     }
     

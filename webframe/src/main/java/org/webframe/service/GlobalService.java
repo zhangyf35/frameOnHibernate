@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webframe.common.Pager;
-import org.webframe.common.QueryAssister;
+import org.webframe.common.QuerySir;
 
 /**
  * 全局service，包含所有基本操作<br>
@@ -70,12 +70,11 @@ public class GlobalService extends SqlService{
 	/**
 	 * 根据条件查询唯一结果（可以是查询的唯一对象，也可以是查询的唯一其他结果，如：总条数）<br>
 	 * 注意:如果返回普通类型请使用Serializable接收返回值
-	 * @param hql hql语句   参数用?(英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return 任意对象，查询的什么返回什么
 	 */
-	public <T> T unique(QueryAssister hqlQueryAssister) {
-		return globalDao.findUnique(hqlQueryAssister);
+	public <T> T unique(QuerySir hqlQuerySir) {
+		return globalDao.findUnique(hqlQuerySir);
 	}
 	
 	/**
@@ -84,43 +83,39 @@ public class GlobalService extends SqlService{
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
 	public <T> List<T> findAll(Class<T> cla) {
-		QueryAssister queryAssister = new QueryAssister();
-		queryAssister.addQuery("from " + cla.getSimpleName());
-		return globalDao.findList(queryAssister);
+		QuerySir hqlQuerySir = new QuerySir();
+		hqlQuerySir.addQuery("from " + cla.getSimpleName());
+		return globalDao.findList(hqlQuerySir);
 	}
 	
 	/**
 	 * 用hql对象查询的对象集合
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * @param hqlQuerySir 查询辅助类
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> list(QueryAssister hqlQueryAssister){
-		return globalDao.findList(hqlQueryAssister);
+	public <T> List<T> list(QuerySir hqlQuerySir){
+		return globalDao.findList(hqlQuerySir);
 	}
 	
 	/**
 	 * 用hql对象查询返回指定条数的对象集合
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
+	 * @param hqlQuerySir 查询辅助类
 	 * @param count 指定查询条数(如果指定条数大于数据库存储的数据条数,查出数据以数据库条数为准)
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listByCount(QueryAssister hqlQueryAssister, int count){
-		return globalDao.findListByCount(hqlQueryAssister, count);
+	public <T> List<T> listByCount(QuerySir hqlQuerySir, int count){
+		return globalDao.findListByCount(hqlQuerySir, count);
 	}
 	
 	/**
-	 * 查询分页列表
-	 * @param hql hql语句   参数用 ? (英文状态下)表示
-	 * @param page 当前页
-	 * @param size 每页条数
-	 * @param params hql语句中的参数，参数顺序为hql中的?顺序,没有参数则不传如此参数!
+	 * 将分页数据注入分页对象
+	 * @param hqlQuerySir 查询辅助类
+	 * @param pager 分页对象
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据<br>
 	 * (如果使用了该方法Pager中的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> Pager<T> page(QueryAssister hqlQueryAssister, Pager<T> pager) {
-		return globalDao.findPage(hqlQueryAssister, pager);
+	public <T> void pageInjection(QuerySir hqlQuerySir, Pager<T> pager) {
+		globalDao.pageInjection(hqlQuerySir, pager);
 	}
 	
 }
