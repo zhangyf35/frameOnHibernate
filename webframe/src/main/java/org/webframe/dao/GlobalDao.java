@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.QueryTranslatorImpl;
@@ -29,21 +28,13 @@ public class GlobalDao extends SqlDao{
 	public GlobalDao(SessionFactory sessionFactory) {
 		super(sessionFactory);
 	}
-
-	/**
-	 * 获取session,得到的是CurrentSession
-	 * @return CurrentSession
-	 */
-	public Session getSession() {
-		return super.getSession();
-	}
 	
 	/**
 	 * 添加一个对象
 	 * @param object 映射模型
 	 * @return 插入的对象的主键
 	 */
-	public Serializable addObject(Object object) {
+	public Serializable insert(Object object) {
 		return getSession().save(object);
 	}
 
@@ -51,7 +42,7 @@ public class GlobalDao extends SqlDao{
 	 * 删除一个对象，对象中只包含对象的主键即可
 	 * @param object 映射模型
 	 */
-	public void deleteObject(Object object) {
+	public void delete(Object object) {
 		getSession().delete(object);
 	}
 	
@@ -60,20 +51,20 @@ public class GlobalDao extends SqlDao{
 	 * 此更新方法如果对象属性为null，则数据库对应字段修改为null
 	 * @param object
 	 */
-	public void updateObjectForNull(Object object) {
+	public void updateForNull(Object object) {
 		getSession().update(object);
 	}
 	
 	/**
 	 * 更新一个对象，此更新方法只更新对象中属性不为null的值，对象中的id为必须值<br>
-	 * 如果hibernate设置了动态更新，则只发出不为null的属性的sql，如果不设置动态更新则发出修改全部属性的sql<br>
+	 * 如果hibernate设置了动态更新，则只发出修改不为null的属性的sql，如果不设置动态更新则发出修改全部属性的sql,但并不修改为null的属性的值<br>
 	 * 动态更新参考(在entity的类上注解)：<br>
 	 * hibernate 3.x：@org.hibernate.annotations.Entity(dynamicUpdate=true)<br>
 	 * hibernate 4.x：@dynamicUpdate(true)
 	 * @param object 映射模型
 	 * @return 新的完整对象
 	 */
-	public <T> T updateObject(Object object) {
+	public <T> T update(Object object) {
 		Object newObject = getSession().get(object.getClass(), MergeObject.getId(object));
 		MergeObject.merge(newObject, object);
 		getSession().update(newObject);
@@ -115,7 +106,7 @@ public class GlobalDao extends SqlDao{
 	 * @param count 指定查询的条数
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> findListByCount(QuerySir hqlQuerySir, int count) {
+	public <T> List<T> findListByAmount(QuerySir hqlQuerySir, int count) {
 		return getQuery(hqlQuerySir).setFirstResult(0).setMaxResults(count).list();
 	}
 	

@@ -45,7 +45,7 @@ public class SqlService {
 	 * @param sqlQuerySir 查询辅助类
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public List<Map<String, Serializable>> listMapByCountSql(QuerySir sqlQuerySir, int count){
+	public List<Map<String, Serializable>> listMapByAmountSql(QuerySir sqlQuerySir, int count){
 		return globalDao.findListMapByCount(sqlQuerySir, count);
 	}
 	

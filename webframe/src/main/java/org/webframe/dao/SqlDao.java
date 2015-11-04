@@ -51,8 +51,8 @@ public class SqlDao {
 	/**
 	 * sql查询单一对象<br>
 	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
-	 * @param hqlQuerySir 查询辅助类
-	 * @return (返回的Map不可能为null,所以上层程序不用判断null)
+	 * @param sqlQuerySir 查询辅助类
+	 * @return Map<String, Serializable>
 	 */
 	public Map<String, Serializable> findMapBySql(QuerySir sqlQuerySir) {
 		MapWork work = new MapWork(sqlQuerySir);
@@ -63,8 +63,8 @@ public class SqlDao {
 	/**
 	 * sql查询map列表<br>
 	 * (map中的key为格式化后的key,该key为查询出的结果字段经过驼峰命名格式化后的key)
-	 * @param hqlQuerySir 查询辅助类
-	 * @return (返回的list不可能为null,所以上层程序不用判断null)
+	 * @param sqlQuerySir 查询辅助类
+	 * @return List<Map<String, Serializable>>
 	 */
 	public List<Map<String, Serializable>> findListMapBysql(QuerySir sqlQuerySir){
 		ListMapWork work = new ListMapWork(sqlQuerySir);
@@ -74,9 +74,9 @@ public class SqlDao {
 	
 	/**
 	 * 查询指定条数的List<Map<String, Serializable>>
-	 * @param hqlQuerySir 查询辅助类
+	 * @param sqlQuerySir 查询辅助类
 	 * @param count 查询的条数
-	 * @return (返回的list不可能为null,所以上层程序不用判断null)
+	 * @return List<Map<String, Serializable>>
 	 */
 	public List<Map<String, Serializable>> findListMapByCount(QuerySir sqlQuerySir, int count) {
 		return findListMapLimit(sqlQuerySir, 1, count);
@@ -84,12 +84,12 @@ public class SqlDao {
 	
 	/**
 	 * 获取指定页，指定条数的listMap
-	 * @param hqlQuerySir 查询辅助类
+	 * @param sqlQuerySir 查询辅助类
 	 * @param page 当前页
 	 * @param size 当前条数
 	 * @return List<Map<String, Serializable>>
 	 */
-	protected List<Map<String, Serializable>> findListMapLimit(QuerySir sqlQuerySir, int page, int size) {
+	List<Map<String, Serializable>> findListMapLimit(QuerySir sqlQuerySir, int page, int size) {
 		sqlQuerySir.addQuery(" limit "+(page-1)*size+","+size);
 		ListMapWork work = new ListMapWork(sqlQuerySir);
 		getSession().doWork(work);
@@ -98,7 +98,7 @@ public class SqlDao {
 	
 	/**
 	 * sql分页查询
-	 * @param hqlQuerySir 查询辅助类
+	 * @param sqlQuerySir 查询辅助类
 	 * @param pager 包含当前页和每页条数
 	 * @return 分页对象;该对象中包含当前页，每页条数，总条数，总页数，和查询出来的分页数据
 	 */
@@ -117,8 +117,8 @@ public class SqlDao {
 	/**
 	 * sql查询对象列表
 	 * @param cla 需要查询的对象的class
-	 * @param hqlQuerySir 查询辅助类
-	 * @return (返回的list不可能为null,所以上层程序不用判断null)
+	 * @param sqlQuerySir 查询辅助类
+	 * @return List<T>
 	 */
 	public <T> List<T> findListBySql(Class<T> cla, QuerySir sqlQuerySir) {
 		return getSqlQuery(sqlQuerySir).addEntity(cla).list();
@@ -127,19 +127,19 @@ public class SqlDao {
 	/**
 	 * sql查询单一对象 
 	 * @param cla 需要查询的对象的class
-	 * @param hqlQuerySir 查询辅助类
+	 * @param sqlQuerySir 查询辅助类
 	 * @return entity的对象
 	 */
 	public <T> T findUniqueBySql(Class<T> cla, QuerySir sqlQuerySir) {
 		return (T) getSqlQuery(sqlQuerySir).addEntity(cla).uniqueResult();
-	} 
+	}
 	
 	/**
 	 * 获取SqlQuery,获取的同时将参数设置了,此方法不提供公用
-	 * @param hqlQuerySir 查询辅助类
+	 * @param sqlQuerySir 查询辅助类
 	 * @return SQLQuery
 	 */
-	protected SQLQuery getSqlQuery(QuerySir sqlQuerySir) {
+	SQLQuery getSqlQuery(QuerySir sqlQuerySir) {
 		String sql = sqlQuerySir.getResultQuery();
 		List<Object> params = sqlQuerySir.getParams();
  		SQLQuery sqlQuery = getSession().createSQLQuery(sql);

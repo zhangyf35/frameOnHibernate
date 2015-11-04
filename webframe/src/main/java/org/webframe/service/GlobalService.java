@@ -23,7 +23,7 @@ public class GlobalService extends SqlService{
 	 * @return 返回插入新对象的主键
 	 */
 	public <T> Serializable save(T object) {
-		return globalDao.addObject(object);
+		return globalDao.insert(object);
 	}
 
 	/**
@@ -31,7 +31,7 @@ public class GlobalService extends SqlService{
 	 * @param object 映射模型
 	 */
 	public <T> void remove(T object) {
-		globalDao.deleteObject(object);
+		globalDao.delete(object);
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class GlobalService extends SqlService{
 	 * @return 新的完整对象
 	 */
 	public <T> T modify(T object) {
-		return globalDao.updateObject(object);
+		return globalDao.update(object);
 	}
 	
 	/**
@@ -54,7 +54,7 @@ public class GlobalService extends SqlService{
 	 * @param object
 	 */
 	public void modifyForNull(Object object) {
-		globalDao.updateObjectForNull(object);
+		globalDao.updateForNull(object);
 	}
 	
 	/**
@@ -103,8 +103,8 @@ public class GlobalService extends SqlService{
 	 * @param count 指定查询条数(如果指定条数大于数据库存储的数据条数,查出数据以数据库条数为准)
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)
 	 */
-	public <T> List<T> listByCount(QuerySir hqlQuerySir, int count){
-		return globalDao.findListByCount(hqlQuerySir, count);
+	public <T> List<T> listByAmount(QuerySir hqlQuerySir, int count){
+		return globalDao.findListByAmount(hqlQuerySir, count);
 	}
 	
 	/**
