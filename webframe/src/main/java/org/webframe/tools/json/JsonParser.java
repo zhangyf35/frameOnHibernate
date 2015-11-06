@@ -4,10 +4,12 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.webframe.tools.json.config.FilterAnnotationReader;
+import org.webframe.tools.json.context.HttpServiceContext;
 import org.webframe.tools.json.propertyFilter.JsonPropertyFilter;
 import org.webframe.tools.json.util.TypeJudger;
 
@@ -30,10 +32,10 @@ public class JsonParser {
 	private FilterAnnotationReader annotationReader;
 	
 	/** 请求对象 */
-	private HttpServletRequest request;
+	private HttpServletRequest request = HttpServiceContext.getRequest();
 	
 	/** 相应对象 */
-	private HttpServletResponse response;
+	private HttpServletResponse response = HttpServiceContext.getResponse();
 	
 	/**
 	 * 构造器
@@ -42,12 +44,9 @@ public class JsonParser {
 	 * @param request
 	 * @param response
 	 */
-	public JsonParser(Object object, FilterAnnotationReader annotationReader,
-			HttpServletRequest request, HttpServletResponse response) {
+	public JsonParser(Object object, FilterAnnotationReader annotationReader) {
 		this.object = object;
 		this.annotationReader = annotationReader;
-		this.request = request;
-		this.response = response;
 	}
 	
 	/**
@@ -58,7 +57,8 @@ public class JsonParser {
 		if(annotationReader.hasJsonAutoFilterLazy()) {
 			config.setJsonPropertyFilter(new JsonPropertyFilter(annotationReader));
 		}
-		writeJson(config);
+		String resultString = getResultString(config);
+		outString(resultString);
 	}
 	
 	/**
@@ -74,17 +74,17 @@ public class JsonParser {
 	 * json
 	 * @param propertyFilter
 	 */
-	private void writeJson(JsonConfig config) {
+	private String getResultString(JsonConfig config) {
 		String resultJsonString = getJsonString(config);
 		if(annotationReader.isJsonp()) {
 			String jsonpCallback = request.getParameter(annotationReader.getJsonpCallback());
 			setJsonpResponseParams();
-			outString(jsonpCallback+"("+resultJsonString+")");
+			resultJsonString = jsonpCallback+"("+resultJsonString+")";
 		} else {
 			setJsonResponseParams();
-			outString(resultJsonString);
 		}
 		System.out.println(resultJsonString);
+		return resultJsonString;
 	}
 	
 	/**
@@ -108,19 +108,10 @@ public class JsonParser {
 	
 	/**
 	 * 输出字符串
-	 * @param resultJsonString json字符串
-	 * @param response 响应
-	 */
-	public void outString(String resultJsonString) {
-		outString(resultJsonString, response);
-	}
-	
-	/**
-	 * 输出字符串
 	 * @param str
 	 * @param response
 	 */
-	public static void outString(String str, HttpServletResponse response) {
+	public void outString(String str) {
 		try {
 			PrintWriter out = response.getWriter();
 	        out.write(str);//返回jsonp格式数据  

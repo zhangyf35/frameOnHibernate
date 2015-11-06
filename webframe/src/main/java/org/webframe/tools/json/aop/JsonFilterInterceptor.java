@@ -2,15 +2,11 @@ package org.webframe.tools.json.aop;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.webframe.tools.json.JsonParser;
 import org.webframe.tools.json.config.FilterAnnotationReader;
-import org.webframe.tools.json.context.HttpServiceContext;
 
 /**
  * aop-Controller<br>
@@ -37,17 +33,15 @@ public class JsonFilterInterceptor {
     	//判断是否返回为json
     	if(object != null) {
 	    	if(method.isAnnotationPresent(ResponseBody.class)) {
-	    		HttpServletRequest request = HttpServiceContext.getRequest();
-				HttpServletResponse response = HttpServiceContext.getResponse();
 				long x = System.currentTimeMillis();
 				//如果返回的是字符串
 	    		if (object.getClass().getSimpleName().equals("String")) {
-	    			JsonParser.outString(String.valueOf(object), response);
+	    			new JsonParser(null,null).outString(String.valueOf(object));
 	    		}
 	    		//如果返回的不是字符串
 	    		else {
 	    			FilterAnnotationReader annotationReader = new FilterAnnotationReader(method);
-					JsonParser jsonParser = new JsonParser(object, annotationReader, request, response);
+					JsonParser jsonParser = new JsonParser(object, annotationReader);
 	    			jsonParser.outJson();
 	    		}
 	    		long y = System.currentTimeMillis();
