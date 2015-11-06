@@ -4,8 +4,9 @@
 	
 	<groupId>org.webframe</groupId>
 	<artifactId>webframe</artifactId>
-	<packaging>jar</packaging>
 	<version>1.0.0</version>
+	<packaging>jar</packaging>
+	
 	
 	<name>webframe</name>
 	<url>http://maven.apache.org</url>
@@ -258,6 +259,12 @@
 		    <artifactId>json-lib</artifactId>
 		    <version>2.4</version>
             <classifier>jdk15</classifier>
+		</dependency>
+		<!-- jstl标签 -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
 		</dependency>
 	</dependencies>
 	<build>

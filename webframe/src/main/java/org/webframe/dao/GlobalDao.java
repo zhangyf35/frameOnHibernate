@@ -142,8 +142,9 @@ public class GlobalDao extends SqlDao{
 		queryTranslator.compile(Collections.EMPTY_MAP, false); 
 		String tempSQL = queryTranslator.getSQLString(); 
 		String countSQL = "select count(*) from (" + tempSQL + ") tmp_count_t";
-		QuerySir sqlQuerySir = new QuerySir(countSQL,hqlQuerySir.getParams());
-		BigInteger count = (BigInteger) super.getSqlQuery(sqlQuerySir).uniqueResult(); 
+		QuerySir sqlQuerySir = hqlQuerySir.clearQuery().addQuery(countSQL);
+		BigInteger count = (BigInteger) super.getSqlQuery(sqlQuerySir).uniqueResult();
+		hqlQuerySir.clearQuery().addQuery(hql);
 		return count.longValue();
 	}
 	
