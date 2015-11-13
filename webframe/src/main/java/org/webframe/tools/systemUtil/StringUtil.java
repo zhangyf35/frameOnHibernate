@@ -13,17 +13,20 @@ public class StringUtil {
 	 * 得到UUID
 	 * @return UUID
 	 */
-	public static String randomUUID() {
+	public static String UUID() {
 		return UUID.randomUUID().toString().trim().replaceAll("-", "");
 	}
 	
 	/**
-	 * 得到指定位数的字符串位数length必须<=128
 	 * @param length
 	 * @return 指定位数的字符串
 	 */
 	public static String randomString128() {
-		return randomUUID()+randomUUID()+randomUUID()+randomUUID();
+		String result128 = "";
+		for (int i = 0; i < 4; i++) {
+			result128 += UUID();
+		}
+		return result128;
 	}
 	
 	/**

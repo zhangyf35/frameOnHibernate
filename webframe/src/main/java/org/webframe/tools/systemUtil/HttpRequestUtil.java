@@ -25,7 +25,7 @@ import org.apache.http.util.EntityUtils;
  * @author 张永凤
  */
 @SuppressWarnings("deprecation")
-public class WebUtil {
+public class HttpRequestUtil {
 	
 	/**
 	 * 获取httpClient

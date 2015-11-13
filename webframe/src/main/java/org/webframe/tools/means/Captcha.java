@@ -24,7 +24,7 @@ public class Captcha {
 	private int lineCount = 120; // 验证码干扰线数
 	private String code = null; // 验证码
 	private BufferedImage buffImg = null; // 验证码图片Buffer
-	private char[] codeSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9' }; // 验证码字符序列
+	private char[] codeSequence = {'1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'z', 'x', 'w', 'm', 'h', 'y' }; // 验证码字符序列
 	private int[] codecolor = {0x000000, 0x3F3580, 0xB43A83, 0x1D7F1D, 0x4594F6, 0x8C5E5A}; // 验证码颜色集
 	
 	/**

@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  */
 @Target({})
 @Retention(RUNTIME)
-public @interface Filter {
+public @interface FilterFields {
 	
 	/** 要加载的类 */
 	Class<?> clazz() default void.class;

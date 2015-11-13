@@ -25,8 +25,8 @@ public class EncodeUtil {
 	 * @param randomString
 	 * @return (如果密码对比正确返回true)
 	 */
-	public static boolean passwordContrast(String oldString, String newString, String randomString) {
-		if(oldString.equals(encode(newString,randomString))){
+	public static boolean passwordContrast(String oldPassword, String newPassword, String randomString) {
+		if(oldPassword != null && oldPassword.equals(encode(newPassword,randomString))){
 			return true;
 		}
 		return false;

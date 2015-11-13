@@ -3,6 +3,7 @@ package org.webframe.tools.json.propertyFilter;
 import java.util.Map;
 import java.util.Set;
 
+import org.webframe.Exception.JsonFilterException;
 import org.webframe.tools.json.config.FilterAnnotationReader;
 import org.webframe.tools.json.util.TypeJudger;
 
@@ -15,37 +16,42 @@ import net.sf.json.util.PropertyFilter;
  */
 public class JsonPropertyFilter implements PropertyFilter{
 	
-	/** 要显示的类数组 */
-	Class<?>[] showClass = null;
-	
-	/** 要过滤的字段集合 */
-	Map<Class<?>,Set<String>> extraFilterFields = null;
+	private FilterAnnotationReader annotationReader = null;
 	
 	public JsonPropertyFilter(FilterAnnotationReader annotationReader) {
-		this.showClass = annotationReader.getShowClass();
-		this.extraFilterFields = annotationReader.getExtraFilterFields();
+		this.annotationReader = annotationReader;
 	}
 	
 	/**
 	 * 接口过滤方法
 	 */
 	public boolean apply(Object object, String fieldName, Object fieldValue) {
-		Boolean isFilter = false;
-		Class<?> objectClass = object.getClass();
+		//是否过滤当前字段, true为过滤,false为不过滤
+		boolean isFilter = false;
 		try {
+			//当前过滤类
+			Class<?> objectClass = object.getClass();
+			//获取当前过滤类
+			if(objectClass.getName().contains("_$")) {
+				objectClass = getRealClass(objectClass);
+			}
 			if(TypeJudger.isMap(object)) {
-				isFilter = extraFilterFieldsJudgeForMap(isFilter, fieldName);
+				isFilter = filterFieldsJudgeForMap(fieldName);
 			} else {
-				if(objectClass.getName().contains("_$")) {
-					String classToString = objectClass.toString();
-					String classString = classToString.substring(6,classToString.indexOf("_$"));
-					objectClass = Class.forName(classString);
+				if(showFieldsIsContainsClass(objectClass) && filterFieldsIsContainsClass(objectClass)) {
+					throw new JsonFilterException("The same class cannot have both filterFields and showFields attributes in @jsonFilterLazy");
+				} else if(filterFieldsIsContainsClass(objectClass)) {
+					//过滤字段
+					isFilter = filterFieldsJudge(objectClass, fieldName);
+				} else if(showFieldsIsContainsClass(objectClass)) {
+					//是否为显示字段
+					isFilter = !showFieldsJudge(objectClass, fieldName);
 				}
+				
+				//是否是懒加载字段
 				if(TypeJudger.isFetchLazy(objectClass, fieldName)) {
-					isFilter = true;
-					isFilter = showClassJudge(isFilter, objectClass, fieldName);
+					isFilter = showClassJudge(objectClass, fieldName);
 				}
-				isFilter = extraFilterFieldsJudge(isFilter, objectClass, fieldName);
 			}
 		} catch (ClassNotFoundException e) {
 			//e.printStackTrace();
@@ -70,8 +76,9 @@ public class JsonPropertyFilter implements PropertyFilter{
 	 * @throws NoSuchFieldException
 	 * @throws SecurityException
 	 */
-	private Boolean showClassJudge(Boolean isFilter, Class<?> objectClass, String fieldName)
+	boolean showClassJudge(Class<?> objectClass, String fieldName)
 			throws NoSuchFieldException, SecurityException {
+		Class<?>[] showClass = annotationReader.getShowClass();
 		if(showClass != null) {
 			for (Class<?> clazz : showClass) {
 				String typeString = objectClass.getDeclaredField(fieldName).getGenericType().toString();
@@ -80,39 +87,81 @@ public class JsonPropertyFilter implements PropertyFilter{
 				}
 			}
 		}
-		return isFilter;
+		return true;
 	}
 	
 	/**
-	 * entity中过滤不是懒加载的字段
+	 * entity中过滤的字段
 	 * @param isFilter
 	 * @param objectClass
 	 * @param fieldName
 	 * @return Boolean
 	 */
-	private Boolean extraFilterFieldsJudge(Boolean isFilter, Class<?> objectClass, String fieldName) {
-		if(extraFilterFields != null && extraFilterFields.keySet().contains(objectClass)) {
-			if(extraFilterFields.get(objectClass).contains(fieldName)) {
-				return true;
-			}
+	boolean filterFieldsJudge(Class<?> objectClass, String fieldName) {
+		Map<Class<?>, Set<String>> filterFields = annotationReader.getFilterFields();
+		if(filterFields.get(objectClass).contains(fieldName)) {
+			return true;
 		}
-		return isFilter;
+		return false;
 	}
+	
 	/**
-	 * Map中过滤不是懒加载的字段
+	 * 显示字段中是否包含当前过滤类
+	 * @param objectClass
+	 * @return
+	 */
+	boolean filterFieldsIsContainsClass(Class<?> objectClass) {
+		Map<Class<?>, Set<String>> filterFields = annotationReader.getFilterFields();
+		return filterFields != null? filterFields.keySet().contains(objectClass) : false;
+	}
+	
+	/**
+	 * entity中显示的字段
+	 * @param isFilter
+	 * @param objectClass
+	 * @param fieldName
+	 * @return Boolean
+	 */
+	boolean showFieldsJudge(Class<?> objectClass, String fieldName) {
+		Map<Class<?>, Set<String>> showFields = annotationReader.getShowFields();
+		if(showFields.get(objectClass).contains(fieldName)) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 显示字段中是否包含当前过滤类
+	 * @param objectClass
+	 * @return
+	 */
+	boolean showFieldsIsContainsClass(Class<?> objectClass) {
+		Map<Class<?>, Set<String>> showFields = annotationReader.getShowFields();
+		return showFields != null ? showFields.keySet().contains(objectClass) : false;
+	}
+	
+	/**
+	 * Map中过滤的字段
 	 * @param isFilter
 	 * @param fieldName
 	 * @return Boolean
 	 * @throws InstantiationException
 	 * @throws IllegalAccessException
 	 */
-	private Boolean extraFilterFieldsJudgeForMap(Boolean isFilter, String fieldName)
+	boolean filterFieldsJudgeForMap(String fieldName)
 			throws InstantiationException, IllegalAccessException {
-		if(extraFilterFields != null && extraFilterFields.keySet().contains(Map.class)) {
-			if(extraFilterFields.get(Map.class).contains(fieldName)) {
+		Map<Class<?>, Set<String>> filterFields = annotationReader.getFilterFields();
+		if(filterFields != null && filterFields.keySet().contains(Map.class)) {
+			if(filterFields.get(Map.class).contains(fieldName)) {
 				return true;
 			}
 		}
-		return isFilter;
+		return false;
+	}
+	
+	Class<?> getRealClass(Class<?> objectClass) throws ClassNotFoundException {
+		String classToString = objectClass.toString();
+		String classString = classToString.substring(6,classToString.indexOf("_$"));
+		return Class.forName(classString);
 	}
 }

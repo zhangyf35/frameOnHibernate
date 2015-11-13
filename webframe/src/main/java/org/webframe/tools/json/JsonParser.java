@@ -54,7 +54,7 @@ public class JsonParser {
 	 */
 	public void outJson() {
 		JsonConfig config = getCurrentConfig();
-		if(annotationReader.hasJsonAutoFilterLazy()) {
+		if(annotationReader.hasJsonFilterLazy()) {
 			config.setJsonPropertyFilter(new JsonPropertyFilter(annotationReader));
 		}
 		String resultString = getResultString(config);
