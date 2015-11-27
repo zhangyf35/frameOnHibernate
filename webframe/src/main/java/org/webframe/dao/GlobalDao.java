@@ -15,7 +15,7 @@ import org.webframe.tools.reflect.MergeObject;
 
 /**
  * 通用的操作类 dao<br>
- * 在spring-config.xml中配置该bean是sessonFactory使用构造注入
+ * 在spring-config.xml中配置该bean时sessonFactory使用构造注入
  * @author 张永葑
  */
 @SuppressWarnings("unchecked")
@@ -89,6 +89,15 @@ public class GlobalDao extends SqlDao{
 	 */
 	public <T> T findUnique(QuerySir hqlQuerySir) {
 		return (T) getQuery(hqlQuerySir).setFirstResult(0).setMaxResults(2).uniqueResult();
+	}
+	
+	/**
+	 * 执行一个增删改hql语句
+	 * @param hqlQuerySir
+	 * @return
+	 */
+	public int executeUpdate(QuerySir hqlQuerySir) {
+		return getQuery(hqlQuerySir).executeUpdate();
 	}
 	
 	/**

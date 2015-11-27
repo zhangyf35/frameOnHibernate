@@ -78,6 +78,15 @@ public class GlobalService extends SqlService{
 	}
 	
 	/**
+	 * 执行一条增删改hql语句
+	 * @param hqlQuerySir
+	 * @return
+	 */
+	public int execute(QuerySir hqlQuerySir) {
+		return globalDao.executeUpdate(hqlQuerySir);
+	}
+	
+	/**
 	 * 查找某个对象全部列表
 	 * @param cla 要查询的对象的class
 	 * @return (返回的list不可能为null,所以上层程序不用判断null)

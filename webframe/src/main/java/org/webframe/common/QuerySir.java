@@ -60,7 +60,7 @@ public class QuerySir {
 	
 	/**
 	 * 得到参数
-	 * @return Object[]
+	 * @return List<Object>
 	 */
 	public List<Object> getParams() {
 		return params;
