@@ -33,19 +33,13 @@ public class JsonFilterInterceptor {
     	//判断是否返回为json
     	if(object != null) {
 	    	if(method.isAnnotationPresent(ResponseBody.class)) {
-				long x = System.currentTimeMillis();
-				//如果返回的是字符串
-	    		if (object.getClass().getSimpleName().equals("String")) {
+	    		if (object.getClass().getSimpleName().equals("String")) {//如果返回的是字符串
 	    			new JsonParser(null,null).outString(String.valueOf(object));
-	    		}
-	    		//如果返回的不是字符串
-	    		else {
+	    		}else {//如果返回的不是字符串
 	    			FilterAnnotationReader annotationReader = new FilterAnnotationReader(method);
 					JsonParser jsonParser = new JsonParser(object, annotationReader);
 	    			jsonParser.outJson();
 	    		}
-	    		long y = System.currentTimeMillis();
-	    		System.out.println("json转换时间:"+(y-x)+"毫秒");
 	    		return null;
 	    	}
     	}

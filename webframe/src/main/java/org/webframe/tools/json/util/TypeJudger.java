@@ -25,7 +25,7 @@ public class TypeJudger {
 								Float.class, Double.class, BigInteger.class, BigDecimal.class};
 	
 	/**
-	 * 设置number的类型为NUll是json转换后也为null
+	 * 设置number的类型为NUll时json转换后也为null
 	 * @param config
 	 */
 	public static void setNumberDefaultValue(JsonConfig config) {

@@ -43,7 +43,7 @@ public class QuerySir {
 		return setParams1(params);
 	}
 	
-	public QuerySir setParams1(Object[] params) {
+	private QuerySir setParams1(Object[] params) {
 		for (Object object : params) {
 			this.params.add(object);
 		}

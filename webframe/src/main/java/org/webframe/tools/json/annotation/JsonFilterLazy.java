@@ -12,18 +12,18 @@ import java.lang.annotation.Target;
  * 当我们在使用spring和hibernate时，hibernate中的懒加载在进行json转换的时候总是会被转换，<br>
  * 所以只要你用了hibernate在进行json转换时都会将有关联的全部转换,在jackson和jsonlib中都对这个问题进行了优化，但个人觉得稍显麻烦<br>
  * 
- * 现在我们使用@JsonAutoFilterLazy注解，对sping-mvc中任何代码不需要改动,@JsonAutoFilterLazy会帮助我们自动忽略掉懒加载,<br>
+ * 现在我们使用@JsonFilterLazy注解，对sping-mvc中任何代码不需要改动,@JsonFilterLazy会帮助我们自动忽略掉懒加载,<br>
  * 有时我们又需要转换懒加载对象,那么我们只要需要转换的类写到showLazyClass中就行了<br>
  * 
  * 当我们需要过滤类中的属性时,就需要用到filterFields属性(仅仅过滤User中的name和password,其余属性除懒加载字段外自动转换)<br>
  * 格式为<br>
  * filterFields = {<br>
- * 		{@code}@FilterFields(classes = User.class, fields = {"name", "password"})<br>
+ * 		{@code}@FilterFields(clazz = User.class, fields = {"name", "password"})<br>
  * }<br>
  * 
  * 当我们仅仅需要显示某个类中的属性时,就需要用到showFields属性(仅仅转换User中的name和password)
  * showFields = {
- * 		{@code}@ShowFields(classes = User.class, fields = {"name", "password"})<br>
+ * 		{@code}@ShowFields(clazz = User.class, fields = {"name", "password"})<br>
  * }
  * 
  * 注意: 因为filterFields和showFields是相反的,所以两个属性里面不能出现同一个类
