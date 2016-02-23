@@ -3,6 +3,7 @@ package org.webframe.common;
 import java.util.List;
 
 import org.webframe.tools.collects.BeansUtil;
+import org.webframe.tools.systemUtil.StringUtil;
 
 /**
  * 查询辅助拼装类
@@ -12,7 +13,7 @@ import org.webframe.tools.collects.BeansUtil;
 public class QuerySir {
 	
 	/** 语句 */
-	private StringBuilder stringBuilder = BeansUtil.newStringBuilder();
+	private String resultQuery = "";
 	
 	/** 参数 */
 	private List<Object> params = BeansUtil.newArrayList();
@@ -30,7 +31,7 @@ public class QuerySir {
 	 * @return QuerySir
 	 */
 	public QuerySir addQuery(String query) {
-		stringBuilder.append(query).append(" ");
+		StringUtil.join(resultQuery, query, " ");
 		return this;
 	}
 	
@@ -55,7 +56,7 @@ public class QuerySir {
 	 * @return String
 	 */
 	public String getResultQuery() {
-		return stringBuilder.toString();
+		return resultQuery;
 	}
 	
 	/**
@@ -71,7 +72,7 @@ public class QuerySir {
 	 * @return QuerySir
 	 */
 	public QuerySir clearQuery() {
-		stringBuilder.delete(0, stringBuilder.length());
+		resultQuery = "";
 		return this;
 	}
 	

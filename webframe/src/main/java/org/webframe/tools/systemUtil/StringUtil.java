@@ -1,6 +1,9 @@
 package org.webframe.tools.systemUtil;
 
+import java.io.Serializable;
 import java.util.UUID;
+
+import org.webframe.tools.collects.BeansUtil;
 
 /**
  * 字符串处理
@@ -15,6 +18,19 @@ public class StringUtil {
 	 */
 	public static String UUID() {
 		return UUID.randomUUID().toString().trim().replaceAll("-", "");
+	}
+	
+	/**
+	 * 连接字符串
+	 * @param strings
+	 * @return
+	 */
+	public static String join(Serializable... strings) {
+		StringBuilder builder = BeansUtil.newStringBuilder();
+		for (Serializable s : strings) {
+			builder.append(s);
+		}
+		return builder.toString();
 	}
 	
 	/**
